@@ -8,7 +8,7 @@ import lombok.Data;
 public class Message {
 
     private String body;
-    private DateTime timeStamp = DateTime.now();
+    private DateTime timestamp = DateTime.now();
     private boolean isCreatedByUser = false;
     private boolean isFavorite = false;
     private Type type;
