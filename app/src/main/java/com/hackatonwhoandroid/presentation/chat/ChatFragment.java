@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import com.hackatonwhoandroid.R;
 import com.hackatonwhoandroid.databinding.FragmentChatBinding;
 import com.hackatonwhoandroid.domain.model.Message;
+import com.hackatonwhoandroid.utils.SpeedyLinearLayoutManager;
 import com.hackatonwhoandroid.utils.base.presentation.BaseFragment;
 import com.hackatonwhoandroid.utils.base.presentation.IActionListener;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.ActionProvider;
@@ -62,6 +63,14 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
         adapter.setListener(action -> {
             switch (action.getCode()) {
                 case ON_ITEM_ADDED:
+//                    RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getViewDataBinding().recyclerMessages.getContext()) {
+//                        @Override protected int getVerticalSnapPreference() {
+//                            return LinearSmoothScroller.SNAP_TO_START;
+//                        }
+//                    };
+//                    smoothScroller.
+//                    smoothScroller.setTargetPosition((int) action.getData());
+//                    getViewDataBinding().recyclerMessages.getLayoutManager().startSmoothScroll(smoothScroller);
                     getViewDataBinding().recyclerMessages.getLayoutManager().scrollToPosition((int) action.getData());
                     break;
                 case ON_ITEM_CLICK:
@@ -77,6 +86,7 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
             }
         });
         getViewDataBinding().recyclerMessages.setAdapter(adapter);
+        getViewDataBinding().recyclerMessages.setLayoutManager(new SpeedyLinearLayoutManager(getViewDataBinding().recyclerMessages.getContext(),SpeedyLinearLayoutManager.VERTICAL, false));
         int dividerHeight = (int) getViewDataBinding().recyclerMessages.getResources().getDimension(R.dimen.message_divider_height);
         getViewDataBinding().recyclerMessages.addItemDecoration(new VerticalSpaceItemDecoration(dividerHeight));
     }

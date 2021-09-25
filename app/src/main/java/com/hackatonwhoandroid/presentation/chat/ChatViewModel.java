@@ -80,6 +80,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         userMessage.setType(Message.Type.DOMAIN);
         addToMessages(userMessage);
         addToSearchHistory(input);
+        dispatchAction(ON_DOMAIN_SUBMIT);
 
         addDisposable(whoisUseCase.execute(input)
                 .subscribeOn(Schedulers.io())
@@ -93,7 +94,6 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                         },
                         this::handleOnError
                 ));
-        dispatchAction(ON_DOMAIN_SUBMIT);
     }
 
 
