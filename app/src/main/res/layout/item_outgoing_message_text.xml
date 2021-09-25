@@ -110,6 +110,7 @@
             android:id="@+id/imageButton"
             android:layout_width="22dp"
             android:layout_height="22dp"
+            visibility="@{viewmodel.message.isFavorite}"
             app:layout_constraintBottom_toTopOf="@+id/bubble"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/bubble"

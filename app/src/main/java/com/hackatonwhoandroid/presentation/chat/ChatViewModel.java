@@ -18,6 +18,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -40,6 +41,8 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
     private final MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
     private final MutableLiveData<MessageModel> selectedDomainMessage = new MutableLiveData<>();
+
+    private final List<String> searchHistory = new ArrayList<>();
 
     @Inject
     ChatViewModel() {
@@ -119,6 +122,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                             break;
                         }
                     }
+                    this.messages.setValue(messages);
                 }
                 break;
             case REFRESH:
@@ -130,6 +134,13 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 Toaster.showToast(action.toString());
                 break;
         }
+
+    }
+
+    public void addToSearchHistory(String value) {
+        searchHistory.removeIf(element -> element.equals(value));
+        searchHistory.add(value);
+        searchHistory.stream().distinct().collect(Collectors.toList());
 
     }
 
