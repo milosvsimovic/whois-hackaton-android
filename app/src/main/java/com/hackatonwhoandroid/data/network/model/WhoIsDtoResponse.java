@@ -8,7 +8,6 @@ import com.hackatonwhoandroid.R;
 import com.hackatonwhoandroid.domain.model.DomainStatus;
 import com.hackatonwhoandroid.domain.model.Message;
 
-import org.joda.time.DateTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -37,18 +36,10 @@ public class WhoIsDtoResponse {
 
         @Mapping(target = "body", expression = "java(convertToBody(response, resources))")
         @Mapping(target = "type", expression = "java(getType())")
-        @Mapping(target = "timestamp", expression = "java(getTimestamp(response))")
+        @Mapping(target = "timestamp", ignore = true)
         @Mapping(target = "createdByUser", ignore = true)
         @Mapping(target = "favorite", ignore = true)
         public abstract Message mapToMessage(WhoIsDtoResponse response, Resources resources);
-
-        DateTime getTimestamp(WhoIsDtoResponse response) {
-            String expirationDate = response.getExpirationDate();
-            if (expirationDate != null) {
-                return DateTime.parse(expirationDate);
-            }
-            return null;
-        }
 
         String convertToBody(WhoIsDtoResponse response, Resources resources) {
             String body;

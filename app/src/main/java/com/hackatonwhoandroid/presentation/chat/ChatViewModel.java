@@ -74,7 +74,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     private void sendDomainMessage(String input) {
         MessageModel userMessage = new MessageModel();
         userMessage.setBody(input);
-        userMessage.setTimeStamp(DateTime.now());
+        userMessage.setTimestamp(DateTime.now());
         userMessage.setCreatedByUser(true);
         userMessage.setFavorite(false);
         userMessage.setType(Message.Type.DOMAIN);

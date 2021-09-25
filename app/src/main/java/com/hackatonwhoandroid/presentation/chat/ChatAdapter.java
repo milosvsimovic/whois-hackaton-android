@@ -75,7 +75,7 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
                 MessageModel lastMessage = get(getItemCount() - 1);
 
                 for (MessageModel element : items) {
-                    if (lastMessage.getTimeStamp().isBefore(element.getTimeStamp())) {
+                    if (lastMessage.getTimestamp().isBefore(element.getTimestamp())) {
                         add(element);
                         listener.onAction(actionProvider.provide(ON_ITEM_ADDED, getItemCount() - 1));
                     }

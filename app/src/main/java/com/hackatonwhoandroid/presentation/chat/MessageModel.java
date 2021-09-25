@@ -16,7 +16,7 @@ public class MessageModel {
     public String body;
     //public String statusMessage;
     @NotNull
-    public DateTime timeStamp;
+    public DateTime timestamp;
     private boolean isCreatedByUser;
     private boolean isFavorite;
     private Message.Type type;
