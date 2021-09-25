@@ -2,6 +2,6 @@
 <resources>
     <dimen name="message_padding_sides">16dp</dimen>
     <dimen name="message_padding_height">12dp</dimen>
-    <dimen name="message_padding_constraint_top">2dp</dimen>
-    <dimen name="message_padding_constraint_bottom">6dp</dimen>
+    <dimen name="message_padding_constraint_top">9dp</dimen>
+    <dimen name="message_padding_constraint_bottom">10dp</dimen>
 </resources>
