@@ -1,11 +1,15 @@
 package com.hackatonwhoandroid.presentation.chat;
 
+import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_DOMAIN_SUBMIT;
+
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.hackatonwhoandroid.domain.exceptions.NoNetworkException;
 import com.hackatonwhoandroid.domain.model.Message;
 import com.hackatonwhoandroid.domain.usecase.WhoisUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
+import com.hackatonwhoandroid.utils.Toaster;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
 
 import org.joda.time.DateTime;
@@ -34,6 +38,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     WhoisUseCase whoisUseCase;
 
     private final MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
+    private final MutableLiveData<MessageModel> domainMessageSelected = new MutableLiveData<>();
 
     @Inject
     ChatViewModel() {
@@ -78,6 +83,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                         },
                         this::handleOnError
                 ));
+        dispatchAction(ON_DOMAIN_SUBMIT);
         return true;
     }
 
@@ -88,6 +94,11 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         }
         list.add(message);
         messages.setValue(list);
+    }
+
+    public void onDomainMessageActionClick(DomainMessageAction action) {
+        Toaster.showToast(action.toString());
+        // TODO implement logic
     }
 
 //    public LiveData<Boolean> showNoFavoritesView() {
@@ -202,8 +213,16 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         super.dispatchAction(code);
     }
 
+    public void selectDomainMessage(@Nullable MessageModel domainMessage) {
+        domainMessageSelected.setValue(domainMessage);
+    }
+
     public enum ActionCode {
-        ERROR, ERROR_NETWORK, ON_LIST
+        ERROR, ERROR_NETWORK, ON_LIST, ON_DOMAIN_SUBMIT
+    }
+
+    public enum DomainMessageAction {
+        FAVORITE, REFRESH, REMINDER
     }
 
 }

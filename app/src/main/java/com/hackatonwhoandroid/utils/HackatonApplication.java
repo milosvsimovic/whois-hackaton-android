@@ -13,6 +13,7 @@ public class HackatonApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Toaster.init(this);
     }
 
     @Override

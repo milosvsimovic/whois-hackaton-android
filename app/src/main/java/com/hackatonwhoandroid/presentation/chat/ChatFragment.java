@@ -45,7 +45,10 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
         initRecycler();
         getViewModel().getActions().observe(getViewLifecycleOwner(), actionCodeAction -> {
             switch (actionCodeAction.getCode()) {
-
+                case ON_DOMAIN_SUBMIT:
+                    getViewModel().selectDomainMessage(null);
+                    getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
+                    break;
                 case ERROR:
                     break;
             }
@@ -61,11 +64,11 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
                 case ON_ITEM_CLICK:
                     MessageModel messageModel = (MessageModel) action.getData();
                     if (messageModel.getType() == Message.Type.DOMAIN) {
-                        if (getViewDataBinding().layoutDomainActions.getVisibility() == View.VISIBLE) {
-                            getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
-                        } else {
-                            getViewDataBinding().layoutDomainActions.setVisibility(View.VISIBLE);
-                        }
+                        getViewModel().selectDomainMessage(messageModel);
+                        getViewDataBinding().layoutDomainActions.setVisibility(View.VISIBLE);
+                    } else {
+                        getViewModel().selectDomainMessage(null);
+                        getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
                     }
                     break;
             }
