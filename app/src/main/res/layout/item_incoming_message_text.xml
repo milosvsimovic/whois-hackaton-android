@@ -25,7 +25,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="4dp"
-            android:src="@drawable/mask_active"
+            android:src="@drawable/rnids_logo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,9 +36,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="12dp"
             android:background="@drawable/shape_incoming_message"
-            android:backgroundTint="@color/white_three"
-            android:elevation="8dp"
-            android:onClick="@{() -> viewmodel.onClick()}"
+            android:backgroundTint="@color/white"
+            android:elevation="4dp"
             android:paddingStart="@dimen/input_padding_left"
             android:paddingTop="@dimen/input_padding_top"
             android:paddingEnd="@dimen/input_padding_right"
@@ -62,8 +61,9 @@
                 android:elevation="25dp"
                 android:hint="asdasd"
                 android:text="@{viewmodel.message.body}"
-                android:textColor="@color/dark_gray"
-                android:textColorHint="@color/dark_gray"
+                android:textColor="@color/warm_grey"
+                android:fontFamily="sans-serif-light"
+                android:textColorHint="@color/warm_grey"
                 android:textSize="@dimen/message_text_size" />
 
         </com.google.android.flexbox.FlexboxLayout>

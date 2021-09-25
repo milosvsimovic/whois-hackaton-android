@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -19,12 +20,12 @@
         android:paddingEnd="@dimen/message_padding_sides"
         android:paddingBottom="@dimen/message_padding_constraint_bottom">
 
+
         <com.google.android.flexbox.FlexboxLayout
             android:id="@id/bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
-            android:layout_marginBottom="10dp"
             android:background="@drawable/shape_outcoming_message"
             android:backgroundTint="@color/cornflower_blue_two"
             android:elevation="8dp"
@@ -39,21 +40,60 @@
             app:justifyContent="flex_end"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.939"
+            app:layout_constraintHorizontal_bias="0.999"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@id/messageText"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignWithParentIfMissing="true"
-                android:hint="asdasd"
-                android:text="@{viewmodel.message.body}"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="@dimen/message_text_size" />
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@id/messageStatusMessageText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.45"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Status message text"
+                        android:text="@{viewmodel.message.body}"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="@dimen/message_text_small_size" />
+                    <!--android:text="@{viewmodel.message.statusMessage}"-->
+
+                    <TextView
+                        android:id="@id/messageText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.8"
+                        android:hint="asdasd"
+                        android:text="@{viewmodel.message.body}"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="@dimen/message_text_size" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@id/messageDomainExtensionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:alpha="0.8"
+                    android:hint=".rs"
+                    android:text=".rs"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="@dimen/message_text_big_size" />
+            </LinearLayout>
             <!--            <TextView-->
             <!--                android:id="@id/messageTime"-->
             <!--                android:layout_width="wrap_content"-->
@@ -65,5 +105,16 @@
             <!--                app:layout_order="1" />-->
 
         </com.google.android.flexbox.FlexboxLayout>
+
+        <ImageView
+            android:id="@+id/imageButton"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            app:layout_constraintBottom_toTopOf="@+id/bubble"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bubble"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_heart_fill" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

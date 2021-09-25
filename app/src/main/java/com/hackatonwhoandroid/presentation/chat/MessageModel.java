@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.mapstruct.Mapper;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class MessageModel {
 
     public String body;
+    //public String statusMessage;
     @NotNull
     public DateTime timeStamp;
     private boolean isCreatedByUser;
