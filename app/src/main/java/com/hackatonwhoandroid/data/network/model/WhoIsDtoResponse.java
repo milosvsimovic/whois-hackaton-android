@@ -2,9 +2,9 @@ package com.hackatonwhoandroid.data.network.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hackatonwhoandroid.domain.model.DomainStatus;
 import com.hackatonwhoandroid.domain.model.Message;
 
-import org.joda.time.DateTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -39,7 +39,21 @@ public class WhoIsDtoResponse {
         public abstract Message mapToMessage(WhoIsDtoResponse response);
 
         String convertToBody(WhoIsDtoResponse response) {
-            return response.toString();
+            StringBuilder bodyMessage = new StringBuilder();
+            DomainStatus domainStatus = DomainStatus.valueOf(response.domainStatus);
+            if (DomainStatus.ACTIVE == domainStatus) {
+                bodyMessage
+                        .append("\uD83D\uDE15 Domen ").append(response.getDomainName()).append(" je već registrovan.").append("\n\n")
+                        .append("Registrovan: ").append(response.getRegistrationDate()).append("\n\n")
+                        .append("Ističe: ").append(response.getExpirationDate());
+            } else if (DomainStatus.INACTIVE == domainStatus) {
+                bodyMessage
+                        .append("\uD83D\uDE00 Sjajno! ").append(response.getDomainName()).append(" je slobodan!").append("\n\n")
+                        .append("Odaberi neku akciju za ovaj domen");
+
+            }
+
+            return bodyMessage.toString();
         }
 
         Message.Type getType() {
