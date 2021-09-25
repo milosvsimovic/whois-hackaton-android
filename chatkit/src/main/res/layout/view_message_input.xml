@@ -25,7 +25,12 @@
         android:layout_toLeftOf="@id/sendButtonSpace"
         android:layout_toRightOf="@id/attachmentButtonSpace"
         android:layout_toStartOf="@id/sendButtonSpace"
-        android:inputType="textAutoCorrect|textAutoComplete|textMultiLine|textCapSentences" />
+        android:singleLine="true"
+        android:maxLines="1"
+        android:minLines="1"
+        android:imeOptions="actionNext"
+        android:capitalize="none"
+        android:inputType="text" />
 
     <Space
         android:id="@id/sendButtonSpace"

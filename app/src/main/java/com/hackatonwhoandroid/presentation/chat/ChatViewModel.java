@@ -117,10 +117,11 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 // toggle message favorite boolean
                 List<MessageModel> messages = this.messages.getValue();
                 if (messages != null) {
+                    boolean isFavorite = !selectedDomainMessage.isFavorite();
                     for (MessageModel element : messages) {
                         // all elements with the same body (domain name) should toggle favorites state
                         if (element.getType() == Message.Type.DOMAIN && element.getBody().equals(selectedDomainMessage.getBody())) {
-                            element.setFavorite(!element.isFavorite());
+                            element.setFavorite(isFavorite);
                         }
                     }
                     this.messages.setValue(messages);

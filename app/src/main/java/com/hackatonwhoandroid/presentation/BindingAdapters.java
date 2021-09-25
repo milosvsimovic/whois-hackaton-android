@@ -3,20 +3,20 @@ package com.hackatonwhoandroid.presentation;
 import android.graphics.PorterDuff;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.databinding.BindingAdapter;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.hackatonwhoandroid.utils.SimpleTextWatcher;
 import com.stfalcon.chatkit.messages.MessageInput;
-import com.stfalcon.chatkit.utils.ShapeImageView;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -81,6 +81,24 @@ public class BindingAdapters {
         });
     }
 
+    @BindingAdapter("onSubmitInput")
+    public static void bindOnFocusChangeListener(MessageInput messageInput, OnSubmitListener listener) {
+        messageInput.setInputListener(listener::onSubmitListener);
+    }
+
+    @BindingAdapter({"onTextChangeListener"})
+    public static void bindTextChangeListener(EditText editText, OnTextChangeListener listener) {
+        if (listener != null) {
+            editText.addTextChangedListener(new SimpleTextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence sequence, int start, int before, int count) {
+                    listener.onTextChange(sequence.toString());
+                }
+            });
+        }
+    }
+
+
     @BindingAdapter("is_selected")
     public static void setSelected(View view, boolean selected) {
         view.setSelected(selected);
@@ -100,17 +118,20 @@ public class BindingAdapters {
         });
     }
 
-    @BindingAdapter("avatar")
-    public static void bindAvatar(ShapeImageView view, @DrawableRes Integer res) {
-
-    }
-
     public interface OnItemSelectedListener {
         void onItemSelected(Object selectedItem);
     }
 
     public interface MessageInputListener {
         boolean onSubmit(String input);
+    }
+
+    public interface OnSubmitListener {
+        boolean onSubmitListener(CharSequence isSubmitted);
+    }
+
+    public interface OnTextChangeListener {
+        void onTextChange(String text);
     }
 
 }
