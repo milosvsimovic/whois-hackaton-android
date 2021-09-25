@@ -38,51 +38,59 @@
             app:justifyContent="flex_end"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.939"
+            app:layout_constraintHorizontal_bias="0.999"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@id/messageStatusMessageText"
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:alpha="0.35"
-                    android:hint="Status message text"
-                    android:text="@{viewmodel.message.body}"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:textSize="@dimen/message_text_small_size" />
-                <!--android:text="@{viewmodel.message.statusMessage}"-->
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@id/messageStatusMessageText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.35"
+                        android:hint="Status message text"
+                        android:text="@{viewmodel.message.body}"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="@dimen/message_text_small_size" />
+                    <!--android:text="@{viewmodel.message.statusMessage}"-->
+
+                    <TextView
+                        android:id="@id/messageText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.8"
+                        android:hint="asdasd"
+                        android:text="@{viewmodel.message.body}"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="@dimen/message_text_size" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@id/messageText"
+                    android:id="@id/messageDomainExtensionText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:alpha="0.8"
-                    android:hint="asdasd"
-                    android:text="@{viewmodel.message.body}"
+                    android:hint=".rs"
+                    android:text=".rs"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
-                    android:textSize="@dimen/message_text_size" />
+                    android:textSize="@dimen/message_text_big_size" />
             </LinearLayout>
-
-            <TextView
-                android:id="@id/messageDomainExtensionText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.8"
-                android:hint=".RS"
-                android:text=".rs"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="@dimen/message_text_big_size" />
-
             <!--            <TextView-->
             <!--                android:id="@id/messageTime"-->
             <!--                android:layout_width="wrap_content"-->
