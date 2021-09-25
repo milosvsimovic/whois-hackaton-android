@@ -8,6 +8,7 @@ import com.hackatonwhoandroid.R;
 import com.hackatonwhoandroid.domain.model.DomainStatus;
 import com.hackatonwhoandroid.domain.model.Message;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -42,7 +43,7 @@ public class WhoIsDtoResponse {
         public abstract Message mapToMessage(WhoIsDtoResponse response, Resources resources);
 
         String convertToBody(WhoIsDtoResponse response, Resources resources) {
-            String body;
+            String body = StringUtils.EMPTY;
             DomainStatus domainStatus = DomainStatus.valueOf(response.domainStatus);
             switch (domainStatus) {
                 case Active:
