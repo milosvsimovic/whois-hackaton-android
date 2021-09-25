@@ -15,33 +15,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/message_list_layout"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_messages"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="@android:color/white"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/message_divider_height"
+            android:paddingBottom="@dimen/message_divider_height"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/message_input"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@android:color/white"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:paddingTop="@dimen/message_divider_height"
-                android:paddingBottom="@dimen/message_divider_height"
-                android:scrollbars="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:list="@{viewmodel.messages}" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:list="@{viewmodel.messages}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_domain_actions"

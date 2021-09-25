@@ -1,5 +1,6 @@
 package com.hackatonwhoandroid.presentation.chat;
 
+import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_DOMAIN_RESPONSE;
 import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_DOMAIN_SUBMIT;
 
 import androidx.annotation.Nullable;
@@ -38,7 +39,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     WhoisUseCase whoisUseCase;
 
     private final MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
-    private final MutableLiveData<MessageModel> domainMessageSelected = new MutableLiveData<>();
+    private final MutableLiveData<MessageModel> selectedDomainMessage = new MutableLiveData<>();
 
     @Inject
     ChatViewModel() {
@@ -63,8 +64,11 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public boolean onInputSubmit(String domainName) {
-        String input = domainName.toLowerCase();
+        sendDomainMessage(domainName.toLowerCase());
+        return true;
+    }
 
+    private void sendDomainMessage(String input) {
         MessageModel userMessage = new MessageModel();
         userMessage.setBody(input);
         userMessage.setTimeStamp(DateTime.now());
@@ -80,12 +84,14 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                         messageResponse -> {
                             MessageModel model = Mappers.getMapper(MessageModel.Mappers.class).map(messageResponse);
                             addToMessages(model);
+                            selectedDomainMessage.setValue(userMessage);
+                            dispatchAction(ON_DOMAIN_RESPONSE);
                         },
                         this::handleOnError
                 ));
         dispatchAction(ON_DOMAIN_SUBMIT);
-        return true;
     }
+
 
     private void addToMessages(MessageModel message) {
         List<MessageModel> list = messages.getValue();
@@ -97,8 +103,34 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public void onDomainMessageActionClick(DomainMessageAction action) {
-        Toaster.showToast(action.toString());
-        // TODO implement logic
+        MessageModel selectedDomainMessage = this.selectedDomainMessage.getValue();
+        if (selectedDomainMessage == null) {
+            return;
+        }
+
+        switch (action) {
+            case FAVORITE:
+                // toggle message favorite boolean
+                List<MessageModel> messages = this.messages.getValue();
+                if (messages != null) {
+                    for (MessageModel element : messages) {
+                        if (element.getTimeStamp().isEqual(selectedDomainMessage.getTimeStamp())) {
+                            element.setFavorite(!element.isFavorite());
+                            break;
+                        }
+                    }
+                }
+                break;
+            case REFRESH:
+                // resend message with domain name
+                sendDomainMessage(selectedDomainMessage.getBody());
+                this.selectedDomainMessage.setValue(null);
+                break;
+            case REMINDER:
+                Toaster.showToast(action.toString());
+                break;
+        }
+
     }
 
 //    public LiveData<Boolean> showNoFavoritesView() {
@@ -214,11 +246,11 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public void selectDomainMessage(@Nullable MessageModel domainMessage) {
-        domainMessageSelected.setValue(domainMessage);
+        selectedDomainMessage.setValue(domainMessage);
     }
 
     public enum ActionCode {
-        ERROR, ERROR_NETWORK, ON_LIST, ON_DOMAIN_SUBMIT
+        ERROR, ERROR_NETWORK, ON_LIST, ON_DOMAIN_SUBMIT, ON_DOMAIN_RESPONSE
     }
 
     public enum DomainMessageAction {
