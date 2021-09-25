@@ -4,5 +4,7 @@
     <string name="error_no_network">Nemate Internet konekciju</string>
     <string name="error_general">Došlo je do greške</string>
     <string name="hint_enter_a_message">Type a message…</string>
+    <string name="chat_domain_is_already_registred">😕 Domen %s je već registrovan.\n\nRegistrovan: %s\n\nIstiče: %s</string>
+    <string name="chat_domain_is_available">😀 Sjajno! Domen %s je slobodan!\n\nOdaberi neku akciju za ovaj domen</string>
 
 </resources>
