@@ -16,7 +16,6 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingStart="@dimen/message_padding_sides"
-        android:layout_marginRight="10dp"
         android:paddingTop="@dimen/message_padding_constraint_top"
         android:paddingEnd="@dimen/message_padding_sides"
         android:paddingBottom="@dimen/message_padding_constraint_bottom">
