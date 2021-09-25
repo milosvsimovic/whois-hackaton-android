@@ -25,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class NetworkModule {
 
-    private static final String API_BASE_URL = "http://www.google.com/";
+    private static final String API_BASE_URL = "https://thedespot-api-grl3r7n4kq-uc.a.run.app/";
 
     @Singleton
     @Provides

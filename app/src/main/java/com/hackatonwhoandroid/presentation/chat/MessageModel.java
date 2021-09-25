@@ -1,5 +1,7 @@
 package com.hackatonwhoandroid.presentation.chat;
 
+import com.hackatonwhoandroid.domain.model.Message;
+
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.mapstruct.Mapper;
@@ -15,10 +17,12 @@ public class MessageModel {
     @NotNull
     public DateTime timeStamp;
     private boolean isCreatedByUser;
+    private boolean isFavorite;
+    private Message.Type type;
 
     @Mapper
     public static abstract class Mappers {
-//        abstract MessageModel map(Message message);
+        //abstract MessageModel map(Message message);
     }
 
 }

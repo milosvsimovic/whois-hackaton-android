@@ -4,6 +4,7 @@ import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.hackatonwhoandroid.domain.usecase.WhoisUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
 
@@ -14,6 +15,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -25,6 +28,9 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
     @Inject
     ErrorHandler errorHandler;
+
+    @Inject
+    WhoisUseCase whoisUseCase;
 
     private final MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
 
@@ -49,15 +55,14 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public boolean onInputSubmit(String input) {
-        // todo implement submit
-        MessageModel message = MessageModel.builder()
-                .body(input)
-                .timeStamp(DateTime.now())
-                .isCreatedByUser(true)
-                .build();
-        List<MessageModel> list = messages.getValue();
+
+        System.out.print(whoisUseCase.execute(input));
+
+
+
+/*        List<MessageModel> list = messages.getValue();
         list.add(message);
-        messages.setValue(list);
+        messages.setValue(list);*/
         return true;
     }
 

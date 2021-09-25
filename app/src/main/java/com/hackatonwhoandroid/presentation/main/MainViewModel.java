@@ -2,7 +2,7 @@ package com.hackatonwhoandroid.presentation.main;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.hackatonwhoandroid.domain.usecase.ExampleUseCase;
+import com.hackatonwhoandroid.domain.usecase.WhoisUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
 
@@ -18,7 +18,7 @@ public class MainViewModel extends BaseViewModel<MainViewModel.ActionCode> {
     private static final String TAG = MainViewModel.class.getSimpleName();
 
     @Inject
-    ExampleUseCase exampleUseCase;
+    WhoisUseCase whoisUseCase;
 
     @Inject
     ErrorHandler errorHandler;
