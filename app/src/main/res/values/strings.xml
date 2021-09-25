@@ -6,5 +6,7 @@
     <string name="hint_enter_a_message">Type a message…</string>
     <string name="chat_domain_is_already_registred">😕 Domen %s je već registrovan.\n\nRegistrovan: %s\n\nIstiče: %s</string>
     <string name="chat_domain_is_available">😀 Sjajno! Domen %s je slobodan!\n\nOdaberi neku akciju za ovaj domen</string>
+    <string name="chat_domain_expired_not_available_yet">Domen %s je istekao %s ali još uvek nije slobodan za kupovinu.</string>
+    <string name="chat_domain_not_available">Domen %s nije dostupan.</string>
 
 </resources>

@@ -42,15 +42,25 @@ public class WhoIsDtoResponse {
         public abstract Message mapToMessage(WhoIsDtoResponse response, Resources resources);
 
         String convertToBody(WhoIsDtoResponse response, Resources resources) {
-            String body = "";
+            String body;
             DomainStatus domainStatus = DomainStatus.valueOf(response.domainStatus);
-            if (DomainStatus.ACTIVE == domainStatus) {
-                body = String.format(resources.getString(R.string.chat_domain_is_already_registred),
-                        response.getDomainName(), response.getRegistrationDate(), response.getExpirationDate());
-
-            } else if (DomainStatus.INACTIVE == domainStatus) {
-                body = String.format(resources.getString(R.string.chat_domain_is_available),
-                        response.getDomainName());
+            switch (domainStatus) {
+                case Active:
+                    body = String.format(resources.getString(R.string.chat_domain_is_already_registred),
+                            response.getDomainName(), response.getRegistrationDate(), response.getExpirationDate());
+                    break;
+                case Inactive:
+                case NotRegistered:
+                    body = String.format(resources.getString(R.string.chat_domain_is_available),
+                            response.getDomainName());
+                    break;
+                case Expired:
+                    body = String.format(resources.getString(R.string.chat_domain_expired_not_available_yet),
+                            response.getDomainName(), response.getExpirationDate());
+                    break;
+                default:
+                    body = String.format(resources.getString(R.string.chat_domain_not_available),
+                            response.getDomainName());
             }
             return body;
         }
