@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -60,7 +60,8 @@
                         android:id="@id/messageStatusMessageText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:alpha="0.35"
+                        android:alpha="0.45"
+                        android:fontFamily="sans-serif-light"
                         android:hint="Status message text"
                         android:text="@{viewmodel.message.body}"
                         android:textColor="@color/white"
