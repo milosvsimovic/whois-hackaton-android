@@ -18,7 +18,6 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -42,6 +41,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     private final MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
     private final MutableLiveData<MessageModel> selectedDomainMessage = new MutableLiveData<>();
 
+    // distinct element list
     private final List<String> searchHistory = new ArrayList<>();
 
     @Inject
@@ -79,6 +79,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         userMessage.setFavorite(false);
         userMessage.setType(Message.Type.DOMAIN);
         addToMessages(userMessage);
+        addToSearchHistory(input);
 
         addDisposable(whoisUseCase.execute(input)
                 .subscribeOn(Schedulers.io())
@@ -137,13 +138,9 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
     }
 
-    public void addToSearchHistory(String value) {
-        List<String> sortList = new ArrayList<>(searchHistory);
-        sortList.removeIf(element -> element.equals(value));
-        sortList.add(value);
-
-        searchHistory.clear();
-        searchHistory.addAll(sortList.stream().distinct().collect(Collectors.toList()));
+    public void addToSearchHistory(String newValue) {
+        searchHistory.removeIf(element -> element.equals(newValue));
+        searchHistory.add(0, newValue);
     }
 
 //    public LiveData<Boolean> showNoFavoritesView() {
