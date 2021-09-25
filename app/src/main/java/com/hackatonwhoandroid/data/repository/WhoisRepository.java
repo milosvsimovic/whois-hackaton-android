@@ -1,7 +1,11 @@
 package com.hackatonwhoandroid.data.repository;
 
 import com.hackatonwhoandroid.data.network.api.RESTApiMethods;
+import com.hackatonwhoandroid.data.network.model.WhoIsDtoResponse;
+import com.hackatonwhoandroid.domain.model.Message;
 import com.hackatonwhoandroid.domain.repository.IWhoisRepository;
+
+import org.mapstruct.factory.Mappers;
 
 import javax.inject.Inject;
 
@@ -17,7 +21,8 @@ public class WhoisRepository implements IWhoisRepository {
     }
 
     @Override
-    public Single<String> getWhois(String domain) {
-        return apiMethodsServer.getWhois(domain);
+    public Single<Message> getWhois(String domainName) {
+        return apiMethodsServer.getWhois(domainName)
+                .map(response -> Mappers.getMapper(WhoIsDtoResponse.Mappers.class).mapToMessage(response));
     }
 }

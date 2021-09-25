@@ -12,26 +12,32 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/message_padding_sides"
+        android:paddingTop="@dimen/message_padding_constraint_top"
+        android:paddingEnd="@dimen/message_padding_sides"
+        android:paddingBottom="@dimen/message_padding_constraint_bottom">
 
         <com.stfalcon.chatkit.utils.ShapeImageView
             android:id="@id/messageUserAvatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="1dp"
             android:padding="4dp"
             android:src="@drawable/mask_active"
-            app:layout_constraintEnd_toStartOf="@+id/bubble"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@id/bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="12dp"
             android:background="@drawable/shape_incoming_message"
             android:backgroundTint="@color/white_three"
+            android:elevation="12dp"
             android:paddingStart="@dimen/input_padding_left"
             android:paddingTop="@dimen/input_padding_top"
             android:paddingEnd="@dimen/input_padding_right"
@@ -40,7 +46,11 @@
             app:alignItems="stretch"
             app:flexWrap="wrap"
             app:justifyContent="flex_end"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/messageUserAvatar"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
@@ -48,21 +58,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignWithParentIfMissing="true"
+                android:elevation="25dp"
                 android:hint="asdasd"
                 android:text="@{viewmodel.message.body}"
                 android:textColor="@color/dark_gray"
                 android:textColorHint="@color/dark_gray"
                 android:textSize="@dimen/message_text_size" />
-
-            <!--            <TextView-->
-            <!--                android:id="@id/messageTime"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_below="@id/messageText"-->
-            <!--                android:layout_marginLeft="8dp"-->
-            <!--                android:layout_marginStart="8dp"-->
-            <!--                app:layout_alignSelf="center"-->
-            <!--                app:layout_order="1" />-->
 
         </com.google.android.flexbox.FlexboxLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

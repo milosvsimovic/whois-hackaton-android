@@ -4,11 +4,13 @@ import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.hackatonwhoandroid.domain.exceptions.NoNetworkException;
 import com.hackatonwhoandroid.domain.usecase.WhoisUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
 
 import org.joda.time.DateTime;
+import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,34 +38,56 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
     @Inject
     ChatViewModel() {
-        MessageModel message = MessageModel.builder()
-                .body("Zdravo")
-                .timeStamp(DateTime.now())
-                .isCreatedByUser(false)
-                .build();
+//        MessageModel message = new MessageModel();
+//        message.body
 
-        MessageModel message2 = MessageModel.builder()
-                .body("Kako ti mogu pomoći? \uD83D\uDE42")
-                .timeStamp(DateTime.now())
-                .isCreatedByUser(false)
-                .build();
+//                .body("Zdravo")
+//                .timeStamp(DateTime.now())
+//                .isCreatedByUser(false)
+//                .build();
+////
+//        MessageModel message2 = MessageModel.builder()
+//                .body("Kako ti mogu pomoći? \uD83D\uDE42")
+//                .timeStamp(DateTime.now())
+//                .isCreatedByUser(false)
+//                .build();
 
         List<MessageModel> list = new ArrayList<>();
-        list.add(message);
-        list.add(message2);
+//        list.add(message);
+//        list.add(message2);
         messages.setValue(list);
     }
 
-    public boolean onInputSubmit(String input) {
+    public boolean onInputSubmit(String domainName) {
+        String input = domainName.toLowerCase();
 
-        System.out.print(whoisUseCase.execute(input));
+        MessageModel userMessage = new MessageModel();
+        userMessage.setBody(input);
+        userMessage.setTimeStamp(DateTime.now());
+        userMessage.setCreatedByUser(true);
+        userMessage.setFavorite(false);
+        addToMessages(userMessage);
 
-
-
-/*        List<MessageModel> list = messages.getValue();
-        list.add(message);
-        messages.setValue(list);*/
+        addDisposable(whoisUseCase.execute(input)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        messageResponse -> {
+                            MessageModel model = Mappers.getMapper(MessageModel.Mappers.class).map(messageResponse);
+                            addToMessages(model);
+                        },
+                        this::handleOnError
+                ));
         return true;
+    }
+
+    private void addToMessages(MessageModel message) {
+        List<MessageModel> list = messages.getValue();
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        list.add(message);
+        messages.setValue(list);
     }
 
     public void onRefresh() {
@@ -74,7 +98,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 //        return Transformations.map(list, input -> LineType.FAVORITE.equals(selectedLineGroup.getValue()) && list.getValue() != null && list.getValue().isEmpty());
 //    }
 
-//    @SuppressWarnings("WeakerAccess")
+    //    @SuppressWarnings("WeakerAccess")
 //    public void syncData() {
 //        analytics.syncSwiped();
 //        addDisposable(syncDataUseCase.execute()
@@ -121,14 +145,14 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 //                ));
 //    }
 //
-//    private void handleOnError(Throwable error) {
-//        if (error instanceof NoNetworkException) {
+    private void handleOnError(Throwable error) {
+        if (error instanceof NoNetworkException) {
 //            noNetwork.setValue(true);
-//            dispatchAction(ActionCode.ERROR_NETWORK);
-//        } else {
-//            dispatchAction(ActionCode.ERROR, errorHandler.parse(error));
-//        }
-//    }
+            dispatchAction(ActionCode.ERROR_NETWORK);
+        } else {
+            dispatchAction(ActionCode.ERROR, errorHandler.parse(error));
+        }
+    }
 //
 //    public void onRefresh() {
 //        syncData();

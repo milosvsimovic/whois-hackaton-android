@@ -8,9 +8,10 @@ import org.mapstruct.Mapper;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class MessageModel {
 
     public String body;
@@ -22,7 +23,7 @@ public class MessageModel {
 
     @Mapper
     public static abstract class Mappers {
-        //abstract MessageModel map(Message message);
+        abstract MessageModel map(Message message);
     }
 
 }

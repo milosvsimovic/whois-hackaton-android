@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="message_padding_sides">16dp</dimen>
+    <dimen name="message_padding_height">12dp</dimen>
+    <dimen name="message_padding_constraint_top">2dp</dimen>
+    <dimen name="message_padding_constraint_bottom">6dp</dimen>
+</resources>

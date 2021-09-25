@@ -1,9 +1,11 @@
 package com.hackatonwhoandroid.domain.repository;
 
+import com.hackatonwhoandroid.domain.model.Message;
+
 import io.reactivex.rxjava3.core.Single;
 
 public interface IWhoisRepository {
 
-    Single<String> getWhois(String domain);
+    Single<Message> getWhois(String domain);
 
 }
