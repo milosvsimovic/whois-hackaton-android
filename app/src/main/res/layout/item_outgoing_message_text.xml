@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.hackatonwhoandroid.presentation.chat.ChatItemViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@id/bubble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
+            android:background="@drawable/shape_outcoming_message"
+            android:backgroundTint="@color/cornflower_blue_two"
+            android:paddingStart="@dimen/input_padding_left"
+            android:paddingTop="@dimen/input_padding_top"
+            android:paddingEnd="@dimen/input_padding_right"
+            android:paddingBottom="@dimen/input_padding_bottom"
+            android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
+            app:alignContent="stretch"
+            app:alignItems="stretch"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@id/messageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:textSize="@dimen/message_text_size"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:hint="asdasd"
+                android:text="@{viewmodel.message.body}" />
+
+            <!--            <TextView-->
+            <!--                android:id="@id/messageTime"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_below="@id/messageText"-->
+            <!--                android:layout_marginLeft="8dp"-->
+            <!--                android:layout_marginStart="8dp"-->
+            <!--                app:layout_alignSelf="center"-->
+            <!--                app:layout_order="1" />-->
+
+        </com.google.android.flexbox.FlexboxLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

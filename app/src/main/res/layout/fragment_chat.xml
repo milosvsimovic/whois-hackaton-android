@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.hackatonwhoandroid.presentation.chat.ChatViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/message_list_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/message_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:onRefresh="@{() -> viewmodel.onRefresh()}">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@android:color/white"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/message_divider_height"
+                    android:paddingBottom="@dimen/message_divider_height"
+                    android:scrollbars="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:list="@{viewmodel.messages}" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.stfalcon.chatkit.messages.MessageInput
+            android:id="@+id/message_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:inputHint="@string/hint_enter_a_message"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:messageInputListener="@{(value)-> viewmodel.onInputSubmit(value)}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

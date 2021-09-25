@@ -1,0 +1,54 @@
+package com.hackatonwhoandroid.presentation.main;
+
+import androidx.lifecycle.MutableLiveData;
+
+import com.hackatonwhoandroid.domain.usecase.ExampleUseCase;
+import com.hackatonwhoandroid.utils.ErrorHandler;
+import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
+
+import javax.inject.Inject;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class MainViewModel extends BaseViewModel<MainViewModel.ActionCode> {
+
+    private static final String TAG = MainViewModel.class.getSimpleName();
+
+    @Inject
+    ExampleUseCase exampleUseCase;
+
+    @Inject
+    ErrorHandler errorHandler;
+
+    private final MutableLiveData<MainModel> model = new MutableLiveData<>();
+
+    @Inject
+    MainViewModel() {
+    }
+
+    void callExampleMethod() {
+        // todo main thread observe on
+//        addDisposable(exampleUseCase.execute()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                        value -> {
+//                            Log.d(TAG, value);
+//                            setModelData(MainModel.builder().text(value).build());
+//                        },
+//                        error -> dispatchAction(ActionCode.ERROR, errorHandler.parse(error))
+//                ));
+    }
+
+    public void setModelData(MainModel data) {
+        model.setValue(data);
+    }
+
+    public enum ActionCode {
+        ERROR
+    }
+
+}

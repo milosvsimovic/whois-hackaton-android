@@ -1,0 +1,111 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdkVersion toolVersions.android.compileSdk
+
+    defaultConfig {
+        minSdkVersion toolVersions.android.minSdk
+        targetSdkVersion toolVersions.android.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility javaSourceCompatibility
+        targetCompatibility javaSourceCompatibility
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Testing
+    testImplementation "androidx.test:core:$test.core"
+    testImplementation "junit:junit:$test.junit"
+    testImplementation "org.mockito:mockito-core:$test.mockito"
+    testImplementation "org.robolectric:robolectric:$test.robolectric"
+
+    androidTestImplementation "androidx.test:runner:$androidTest.runner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidTest.espressoCore"
+
+    //AndroidX
+    implementation "androidx.appcompat:appcompat:$androidx.appcompat"
+    implementation "androidx.constraintlayout:constraintlayout:$androidx.constraintlayout"
+    implementation "androidx.preference:preference:$androidx.preference"
+    implementation "com.google.android.material:material:$google.material"
+    implementation "androidx.multidex:multidex:$androidx.multidex"
+    implementation "androidx.annotation:annotation:$androidx.annotation"
+    implementation "androidx.recyclerview:recyclerview:$androidx.recyclerview"
+    implementation "androidx.vectordrawable:vectordrawable:$androidx.vectordrawable.core"
+    implementation "androidx.vectordrawable:vectordrawable-animated:$androidx.vectordrawable.animated"
+    implementation "com.google.android.material:material:$google.material"
+    implementation "androidx.lifecycle:lifecycle-extensions:$androidx.lifecycle"
+    implementation "com.google.android:flexbox:$androidx.flexbox"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$androidx.swiperefreshlayout"
+
+    //JavaX
+    compileOnly "javax.annotation:javax.annotation-api:imageloaderjavax.annotations"
+
+    //Glide Image Loader
+    implementation "com.github.bumptech.glide:glide:$imageloader.glide"
+    annotationProcessor "com.github.bumptech.glide:compiler:$imageloader.glide"
+
+    // Lombok
+    //noinspection AnnotationProcessorOnCompilePath
+    compileOnly "org.projectlombok:lombok:$lombok"
+    annotationProcessor "org.projectlombok:lombok:$lombok"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombok"
+
+    // Apache
+    implementation "org.apache.commons:commons-text:$apache.textcommons"
+
+    //Dagger2
+    implementation "com.google.dagger:dagger-android:$google.dagger"
+    implementation "com.google.dagger:dagger-android-support:$google.dagger"
+    annotationProcessor "com.google.dagger:dagger-compiler:$google.dagger"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$google.dagger"
+
+    // Rx libs
+    implementation "io.reactivex.rxjava3:rxandroid:$rxLibs.rxAndroid3"
+    implementation "io.reactivex.rxjava3:rxjava:$rxLibs.rxJava3"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$network.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$network.retrofit"
+    implementation "com.squareup.retrofit2:converter-jackson:$network.retrofit"
+    implementation("com.squareup.retrofit2:adapter-rxjava2:$network.retrofit") {
+        exclude group: "io.reactivex"
+    }
+    implementation "com.squareup.okhttp3:logging-interceptor:$network.okhttp3"
+    implementation "com.squareup.okhttp3:okhttp:$network.okhttp3"
+
+    implementation "org.jetbrains:annotations:$jetbrains.annotations"
+
+    // Time
+    implementation "joda-time:joda-time:$util.joda"
+
+    // Mapping
+    implementation "org.mapstruct:mapstruct:$mapstruct.mapstruct"
+    annotationProcessor "org.mapstruct:mapstruct-processor:$mapstruct.mapstruct"
+
+    // ChatKit
+    implementation project(':chatkit')
+
+}
