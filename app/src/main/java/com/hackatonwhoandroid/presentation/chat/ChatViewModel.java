@@ -117,9 +117,9 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 List<MessageModel> messages = this.messages.getValue();
                 if (messages != null) {
                     for (MessageModel element : messages) {
-                        if (element.getTimeStamp().isEqual(selectedDomainMessage.getTimeStamp())) {
+                        // all elements with the same body (domain name) should toggle favorites state
+                        if (element.getType() == Message.Type.DOMAIN && element.getBody().equals(selectedDomainMessage.getBody())) {
                             element.setFavorite(!element.isFavorite());
-                            break;
                         }
                     }
                     this.messages.setValue(messages);
@@ -138,10 +138,12 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public void addToSearchHistory(String value) {
-        searchHistory.removeIf(element -> element.equals(value));
-        searchHistory.add(value);
-        searchHistory.stream().distinct().collect(Collectors.toList());
+        List<String> sortList = new ArrayList<>(searchHistory);
+        sortList.removeIf(element -> element.equals(value));
+        sortList.add(value);
 
+        searchHistory.clear();
+        searchHistory.addAll(sortList.stream().distinct().collect(Collectors.toList()));
     }
 
 //    public LiveData<Boolean> showNoFavoritesView() {
