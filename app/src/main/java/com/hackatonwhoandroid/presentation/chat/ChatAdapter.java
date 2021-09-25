@@ -3,6 +3,8 @@ package com.hackatonwhoandroid.presentation.chat;
 import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_CLICK;
 import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_ADDED;
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
@@ -59,17 +61,24 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
         return viewModel;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void setItems(List<MessageModel> items) {
         if (getItemCount() == 0) {
             super.setItems(items);
         } else {
-            MessageModel lastMessage = get(getItemCount() - 1);
+            // state update for one or more elements
+            if(items.size() == getItemCount()){
+                notifyDataSetChanged();
+            }else{
+                // add or remove element
+                MessageModel lastMessage = get(getItemCount() - 1);
 
-            for (MessageModel element : items) {
-                if (lastMessage.getTimeStamp().isBefore(element.getTimeStamp())) {
-                    add(element);
-                    listener.onAction(actionProvider.provide(ON_ITEM_ADDED, getItemCount() - 1));
+                for (MessageModel element : items) {
+                    if (lastMessage.getTimeStamp().isBefore(element.getTimeStamp())) {
+                        add(element);
+                        listener.onAction(actionProvider.provide(ON_ITEM_ADDED, getItemCount() - 1));
+                    }
                 }
             }
         }
