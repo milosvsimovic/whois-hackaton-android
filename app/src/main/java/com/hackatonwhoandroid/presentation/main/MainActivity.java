@@ -10,6 +10,9 @@ import com.hackatonwhoandroid.presentation.chat.ChatFragment;
 import com.hackatonwhoandroid.utils.base.presentation.BaseActivity;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.Action;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
 
     @Override
@@ -40,4 +43,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             finish();
         }
     }
+
+
+    
+
 }

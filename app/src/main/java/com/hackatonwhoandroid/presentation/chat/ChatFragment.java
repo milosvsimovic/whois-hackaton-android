@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.hackatonwhoandroid.R;
 import com.hackatonwhoandroid.databinding.FragmentChatBinding;
+import com.hackatonwhoandroid.domain.model.Message;
 import com.hackatonwhoandroid.utils.base.presentation.BaseFragment;
 import com.hackatonwhoandroid.utils.base.presentation.IActionListener;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.ActionProvider;
@@ -44,10 +45,13 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
         initRecycler();
         getViewModel().getActions().observe(getViewLifecycleOwner(), actionCodeAction -> {
             switch (actionCodeAction.getCode()) {
-                case REFRESHED:
-                    getViewDataBinding().swipeRefresh.setRefreshing(false);
+                case ON_DOMAIN_SUBMIT:
+                    getViewModel().selectDomainMessage(null);
+                    getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
                     break;
-
+                case ON_DOMAIN_RESPONSE:
+                    getViewDataBinding().layoutDomainActions.setVisibility(View.VISIBLE);
+                    break;
                 case ERROR:
                     break;
             }
@@ -58,13 +62,23 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
         adapter.setListener(action -> {
             switch (action.getCode()) {
                 case ON_ITEM_ADDED:
-                    getViewDataBinding().recycler.getLayoutManager().scrollToPosition((int) action.getData());
+                    getViewDataBinding().recyclerMessages.getLayoutManager().scrollToPosition((int) action.getData());
+                    break;
+                case ON_ITEM_CLICK:
+                    MessageModel messageModel = (MessageModel) action.getData();
+                    if (messageModel.getType() == Message.Type.DOMAIN) {
+                        getViewModel().selectDomainMessage(messageModel);
+                        getViewDataBinding().layoutDomainActions.setVisibility(View.VISIBLE);
+                    } else {
+                        getViewModel().selectDomainMessage(null);
+                        getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
+                    }
                     break;
             }
         });
-        getViewDataBinding().recycler.setAdapter(adapter);
-        int dividerHeight = (int) getViewDataBinding().recycler.getResources().getDimension(R.dimen.message_divider_height);
-        getViewDataBinding().recycler.addItemDecoration(new VerticalSpaceItemDecoration(dividerHeight));
+        getViewDataBinding().recyclerMessages.setAdapter(adapter);
+        int dividerHeight = (int) getViewDataBinding().recyclerMessages.getResources().getDimension(R.dimen.message_divider_height);
+        getViewDataBinding().recyclerMessages.addItemDecoration(new VerticalSpaceItemDecoration(dividerHeight));
     }
 
 

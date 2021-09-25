@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="com.hackatonwhoandroid.presentation.chat.ChatViewModel.DomainMessageAction" />
+
         <variable
             name="viewmodel"
             type="com.hackatonwhoandroid.presentation.chat.ChatViewModel" />
@@ -13,39 +15,108 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/message_list_layout"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_messages"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="@android:color/white"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/message_divider_height"
+            android:paddingBottom="@dimen/message_divider_height"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/message_input"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:list="@{viewmodel.messages}" />
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipe_refresh"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_domain_actions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/message_padding_sides"
+            android:paddingTop="16dp"
+            android:paddingEnd="@dimen/message_padding_sides"
+            android:paddingBottom="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/message_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@id/button_favorites"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:background="@drawable/shape_incoming_message"
+                android:backgroundTint="@color/cornflower_blue_two"
+                android:elevation="8dp"
+                android:hint="Omiljeni"
+                android:onClick="@{() -> viewmodel.onDomainMessageActionClick(DomainMessageAction.FAVORITE)}"
+                android:paddingStart="@dimen/input_padding_left"
+                android:paddingTop="@dimen/input_padding_top"
+                android:paddingEnd="@dimen/input_padding_right"
+                android:paddingBottom="@dimen/input_padding_bottom"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="@dimen/message_text_size"
+                app:layout_constraintBottom_toBottomOf="@+id/button_refresh"
+                app:layout_constraintEnd_toStartOf="@+id/button_reminder"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/button_refresh"
+                app:layout_constraintTop_toTopOf="@+id/button_refresh" />
+
+            <TextView
+                android:id="@id/button_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:background="@drawable/shape_incoming_message"
+                android:backgroundTint="@color/cornflower_blue_two"
+                android:elevation="8dp"
+                android:hint="Podsetnik"
+                android:onClick="@{() -> viewmodel.onDomainMessageActionClick(DomainMessageAction.REMINDER)}"
+                android:paddingStart="@dimen/input_padding_left"
+                android:paddingTop="@dimen/input_padding_top"
+                android:paddingEnd="@dimen/input_padding_right"
+                android:paddingBottom="@dimen/input_padding_bottom"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="@dimen/message_text_size"
+                app:layout_constraintBottom_toBottomOf="@+id/button_favorites"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/button_favorites"
+                app:layout_constraintTop_toTopOf="@+id/button_favorites" />
+
+            <TextView
+                android:id="@+id/button_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:background="@drawable/shape_incoming_message"
+                android:backgroundTint="@color/cornflower_blue_two"
+                android:elevation="8dp"
+                android:hint="Ponovi"
+                android:onClick="@{() -> viewmodel.onDomainMessageActionClick(DomainMessageAction.REFRESH)}"
+                android:paddingStart="@dimen/input_padding_left"
+                android:paddingTop="@dimen/input_padding_top"
+                android:paddingEnd="@dimen/input_padding_right"
+                android:paddingBottom="@dimen/input_padding_bottom"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="@dimen/message_text_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button_favorites"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:onRefresh="@{() -> viewmodel.onRefresh()}">
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:background="@android:color/white"
-                    android:clipToPadding="false"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/message_divider_height"
-                    android:paddingBottom="@dimen/message_divider_height"
-                    android:scrollbars="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:list="@{viewmodel.messages}" />
-
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
