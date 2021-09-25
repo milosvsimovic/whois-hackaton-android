@@ -1,10 +1,9 @@
 package com.hackatonwhoandroid.presentation.chat;
 
-import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.REFRESHED;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.hackatonwhoandroid.domain.exceptions.NoNetworkException;
+import com.hackatonwhoandroid.domain.model.Message;
 import com.hackatonwhoandroid.domain.usecase.WhoisUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
@@ -66,6 +65,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         userMessage.setTimeStamp(DateTime.now());
         userMessage.setCreatedByUser(true);
         userMessage.setFavorite(false);
+        userMessage.setType(Message.Type.DOMAIN);
         addToMessages(userMessage);
 
         addDisposable(whoisUseCase.execute(input)
@@ -88,10 +88,6 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         }
         list.add(message);
         messages.setValue(list);
-    }
-
-    public void onRefresh() {
-        dispatchAction(REFRESHED);
     }
 
 //    public LiveData<Boolean> showNoFavoritesView() {
@@ -207,7 +203,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public enum ActionCode {
-        ERROR, ERROR_NETWORK, ON_LIST, REFRESHED
+        ERROR, ERROR_NETWORK, ON_LIST
     }
 
 }

@@ -28,6 +28,7 @@
             android:background="@drawable/shape_outcoming_message"
             android:backgroundTint="@color/cornflower_blue_two"
             android:elevation="8dp"
+            android:onClick="@{() -> viewmodel.onClick()}"
             android:paddingStart="@dimen/input_padding_left"
             android:paddingTop="@dimen/input_padding_top"
             android:paddingEnd="@dimen/input_padding_right"

@@ -1,5 +1,6 @@
 package com.hackatonwhoandroid.presentation.chat;
 
+import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_CLICK;
 import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_ADDED;
 
 import androidx.annotation.NonNull;
@@ -46,7 +47,13 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
         if (getItemCount() > 0) {
             viewModel.setValue(get(position));
             viewModel.getActions().observe(viewHolder.getLifecycleOwner(), action -> {
-                // todo handle actions
+
+                switch (action.getCode()) {
+                    case CLICK:
+                        MessageModel messageModel = (MessageModel) action.getData();
+                        listener.onAction(actionProvider.provide(ON_ITEM_CLICK, messageModel));
+                        break;
+                }
             });
         }
         return viewModel;
@@ -69,7 +76,7 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
     }
 
     public enum ActionCode {
-        ON_ITEM_ADDED, ITEM_CLICK
+        ON_ITEM_ADDED, ON_ITEM_CLICK
     }
 
 }
