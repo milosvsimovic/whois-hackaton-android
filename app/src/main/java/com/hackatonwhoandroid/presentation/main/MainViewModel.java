@@ -1,5 +1,7 @@
 package com.hackatonwhoandroid.presentation.main;
 
+import static com.hackatonwhoandroid.presentation.main.MainViewModel.ActionCode.ACTION_FAVORITES;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.hackatonwhoandroid.domain.usecase.WhoisUseCase;
@@ -43,12 +45,16 @@ public class MainViewModel extends BaseViewModel<MainViewModel.ActionCode> {
 //                ));
     }
 
+    public void onActionButtonFavoritesClick(){
+        dispatchAction(ACTION_FAVORITES);
+    }
+
     public void setModelData(MainModel data) {
         model.setValue(data);
     }
 
     public enum ActionCode {
-        ERROR
+        ERROR, ACTION_FAVORITES
     }
 
 }

@@ -10,9 +10,6 @@ import com.hackatonwhoandroid.presentation.chat.ChatFragment;
 import com.hackatonwhoandroid.utils.base.presentation.BaseActivity;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.Action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
 
     @Override
@@ -20,6 +17,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         super.onCreate(savedInstanceState);
         getViewModel().callExampleMethod();
         addFragment(R.id.fragment_container, ChatFragment.newInstance(this::handleFragmentActions));
+
+        getViewModel().getActions().observe(this, action -> {
+            switch (action.getCode()) {
+                case ACTION_FAVORITES:
+                    ChatFragment chatFragment = (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    if (chatFragment != null) {
+                        chatFragment.handleFavoritesButtonToggle();
+                    }
+                    break;
+
+
+            }
+        });
+
     }
 
     private void handleFragmentActions(Action<ChatFragment.ActionCode> action) {
@@ -27,6 +38,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             case ON_LINE_CLICK:
 //                addFragment(R.id.fragment_container, DeparturesFragment.newInstance((String) action.getData()));
                 break;
+
+
         }
     }
 
@@ -44,7 +57,5 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         }
     }
 
-
-    
 
 }

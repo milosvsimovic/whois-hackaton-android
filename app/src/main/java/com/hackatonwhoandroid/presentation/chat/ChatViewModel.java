@@ -144,6 +144,11 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         searchHistory.add(0, newValue);
     }
 
+    public void toggleFavorites(){
+
+
+    }
+
 //    public LiveData<Boolean> showNoFavoritesView() {
 //        return Transformations.map(list, input -> LineType.FAVORITE.equals(selectedLineGroup.getValue()) && list.getValue() != null && list.getValue().isEmpty());
 //    }

@@ -59,6 +59,10 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
         });
     }
 
+    public void handleFavoritesButtonToggle() {
+        getViewModel().toggleFavorites();
+    }
+
     private void initRecycler() {
         adapter.setListener(action -> {
             switch (action.getCode()) {
@@ -86,7 +90,7 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
             }
         });
         getViewDataBinding().recyclerMessages.setAdapter(adapter);
-        getViewDataBinding().recyclerMessages.setLayoutManager(new SpeedyLinearLayoutManager(getViewDataBinding().recyclerMessages.getContext(),SpeedyLinearLayoutManager.VERTICAL, false));
+        getViewDataBinding().recyclerMessages.setLayoutManager(new SpeedyLinearLayoutManager(getViewDataBinding().recyclerMessages.getContext(), SpeedyLinearLayoutManager.VERTICAL, false));
         int dividerHeight = (int) getViewDataBinding().recyclerMessages.getResources().getDimension(R.dimen.message_divider_height);
         getViewDataBinding().recyclerMessages.addItemDecoration(new VerticalSpaceItemDecoration(dividerHeight));
     }
