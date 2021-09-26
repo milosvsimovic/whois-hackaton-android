@@ -9,6 +9,7 @@ import com.hackatonwhoandroid.databinding.ActivityMainBinding;
 import com.hackatonwhoandroid.presentation.chat.ChatFragment;
 import com.hackatonwhoandroid.utils.base.presentation.BaseActivity;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.Action;
+import com.hackatonwhoandroid.utils.base.utils.LocaleHelper;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
 
@@ -24,6 +25,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     ChatFragment chatFragment = (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                     if (chatFragment != null) {
                         chatFragment.handleFavoritesButtonToggle();
+                    }
+                    break;
+                case TRANSLATE:
+                    String currentLang = LocaleHelper.getPersistedData(getApplicationContext(), "en");
+                    if (currentLang.equals("en")) {
+                        LocaleHelper.setLocale(getApplicationContext(), "sr");
+                    } else {
+                        LocaleHelper.setLocale(getApplicationContext(), "en");
                     }
                     break;
 

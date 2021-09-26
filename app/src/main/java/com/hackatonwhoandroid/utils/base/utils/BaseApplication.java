@@ -28,7 +28,7 @@ public abstract class BaseApplication extends DaggerApplication {
 
     @Override
     protected void attachBaseContext(Context context) {
-        super.attachBaseContext(context);
+        super.attachBaseContext(LocaleHelper.onAttach(context));
         setViewModelId();
         setupMultiDex(context);
     }

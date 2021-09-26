@@ -1,9 +1,12 @@
 package com.hackatonwhoandroid.utils;
 
+import android.content.Context;
+
 import com.hackatonwhoandroid.BR;
 import com.hackatonwhoandroid.di.DaggerHackatonApplicationComponent;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.ViewModelIdProvider;
 import com.hackatonwhoandroid.utils.base.utils.BaseApplication;
+import com.hackatonwhoandroid.utils.base.utils.LocaleHelper;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
@@ -14,6 +17,11 @@ public class HackatonApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         Toaster.init(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(LocaleHelper.onAttach(context, "en"));
     }
 
     @Override
