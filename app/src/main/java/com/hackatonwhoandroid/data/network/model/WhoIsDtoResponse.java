@@ -30,6 +30,15 @@ public class WhoIsDtoResponse {
     @SerializedName("expiration_date")
     @Expose
     public String expirationDate;
+    @SerializedName("who_is_raw_data")
+    @Expose
+    public String rawData;
+    @SerializedName("host_address")
+    @Expose
+    public String hostAddress;
+    @SerializedName("name_servers")
+    @Expose
+    public String nameServers;
 
     @Mapper
     public static abstract class Mappers {
@@ -66,7 +75,8 @@ public class WhoIsDtoResponse {
                     body = String.format(resources.getString(R.string.chat_domain_not_available),
                             response.getDomainName());
             }
-            return body;
+
+            return body + "/n" + response.getRawData() + "/n" + "Host_address: " + response.getHostAddress()  + "/n" + "Name_servers: " + response.getNameServers();
         }
 
         Message.Type getType() {

@@ -3,7 +3,7 @@
 
     <string name="button_repeat">Ponovi</string>
     <string name="button_favorite">Omiljeni</string>
-    <string name="button_more_info">Detaljnije</string>
+    <string name="button_more_info">Podsetnik</string>
 
     <string name="error_no_network">Nemate Internet konekciju</string>
     <string name="error_general">Došlo je do greške</string>
