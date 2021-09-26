@@ -27,8 +27,8 @@ public class Message {
 
         private static final List<Type> CLICKABLE_STATUS = Arrays.asList(DOMAIN_ACTIVE, DOMAIN_INACTIVE, DOMAIN_OTHER);
 
-        public static boolean isClickable(Type type) {
-            return CLICKABLE_STATUS.contains(type);
+        public boolean isClickable() {
+            return CLICKABLE_STATUS.contains(this);
         }
 
 
