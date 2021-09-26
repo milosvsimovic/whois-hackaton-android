@@ -3,7 +3,7 @@
     <string name="app_name">HackatonWhoAndroid</string>
     <string name="error_no_network">Немате Интернет конекцију</string>
     <string name="error_general">Дошло је до грешке</string>
-    <string name="hint_enter_a_message">Унесите име доменаs…</string>
+    <string name="hint_enter_a_message">Унесите име домена…</string>
     <string name="chat_domain_is_already_registred">😕 Домен %s је већ регистрован.\n\nРегистрован: %s\n\nИстиче: %s</string>
     <string name="chat_domain_is_available">😀 Сјајно! Домен %s је слободан!\n\nОдабери неку акцију за овај домен</string>
     <string name="chat_domain_expired_not_available_yet">Домен %s је истекао %s али још увек није слободан за куповину.</string>
