@@ -23,7 +23,7 @@ public class FavoriteMessageMarkUseCase implements BaseParamUseCase<Message, Com
 
     @Override
     public Completable execute(Message message) {
-        if (!Message.Type.isClickable(message.getType())) {
+        if (!message.getType().isClickable()) {
             return Completable.complete();
         }
         // toggle message favorite

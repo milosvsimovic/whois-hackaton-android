@@ -69,7 +69,9 @@
                 app:layout_constraintEnd_toStartOf="@+id/button_reminder"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/button_refresh"
-                app:layout_constraintTop_toTopOf="@+id/button_refresh" />
+                app:layout_constraintTop_toTopOf="@+id/button_refresh"
+                app:messageType="@{viewmodel.selectedDomainMessage.type}"
+                app:messageTypeTextColor="@{viewmodel.selectedDomainMessage.type}" />
 
             <TextView
                 android:id="@id/button_reminder"
@@ -92,7 +94,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/button_favorites"
-                app:layout_constraintTop_toTopOf="@+id/button_favorites" />
+                app:layout_constraintTop_toTopOf="@+id/button_favorites"
+                app:messageType="@{viewmodel.selectedDomainMessage.type}"
+                app:messageTypeTextColor="@{viewmodel.selectedDomainMessage.type}" />
 
             <TextView
                 android:id="@+id/button_refresh"
@@ -115,7 +119,9 @@
                 app:layout_constraintEnd_toStartOf="@+id/button_favorites"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:messageType="@{viewmodel.selectedDomainMessage.type}"
+                app:messageTypeTextColor="@{viewmodel.selectedDomainMessage.type}" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hackatonwhoandroid.R;
 import com.hackatonwhoandroid.databinding.FragmentChatBinding;
-import com.hackatonwhoandroid.domain.model.Message;
 import com.hackatonwhoandroid.utils.SpeedyLinearLayoutManager;
 import com.hackatonwhoandroid.utils.base.presentation.BaseFragment;
 import com.hackatonwhoandroid.utils.base.presentation.IActionListener;
@@ -89,7 +88,7 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
                     break;
                 case ON_ITEM_CLICK:
                     MessageModel messageModel = (MessageModel) action.getData();
-                    if (Message.Type.isClickable(messageModel.getType())) {
+                    if (messageModel.getType().isClickable()) {
                         getViewModel().selectDomainMessage(messageModel);
                         getViewDataBinding().layoutDomainActions.setVisibility(View.VISIBLE);
                     } else {

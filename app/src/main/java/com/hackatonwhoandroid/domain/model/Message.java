@@ -25,8 +25,8 @@ public class Message {
 
         private static final List<Type> DOMAIN_RESPONSE_STATUS = Arrays.asList(DOMAIN_ACTIVE, DOMAIN_INACTIVE, DOMAIN_OTHER);
 
-        public static boolean isClickable(Type type) {
-            return DOMAIN_RESPONSE_STATUS.contains(type);
+        public boolean isClickable() {
+            return DOMAIN_RESPONSE_STATUS.contains(this);
         }
     }
 
