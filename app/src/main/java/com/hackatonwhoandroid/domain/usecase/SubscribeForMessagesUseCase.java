@@ -12,18 +12,18 @@ import javax.inject.Inject;
 import io.reactivex.rxjava3.core.Observable;
 
 
-public class GetMessagesUseCase implements BaseUseCase<Observable<List<Message>>> {
+public class SubscribeForMessagesUseCase implements BaseUseCase<Observable<List<Message>>> {
 
     @Inject
-    IMessageRepository syncRepository;
+    IMessageRepository messageRepository;
 
     @Inject
-    GetMessagesUseCase() {
+    SubscribeForMessagesUseCase() {
     }
 
     @Override
     public Observable<List<Message>> execute() {
-        return syncRepository.getMessages();
+        return messageRepository.getMessages();
     }
 
 }

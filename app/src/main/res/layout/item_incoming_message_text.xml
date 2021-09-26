@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipChildren="false"
-        visible="@{viewmodel.message.isVisible}"
         android:clipToPadding="false"
         android:paddingStart="@dimen/message_padding_sides"
         android:paddingTop="@dimen/message_padding_constraint_top"

@@ -28,11 +28,13 @@ public class LocalStorage {
     Gson gson;
 
     private List<MessageData> initialList = new ArrayList<>();
+    private boolean showOnlyFavorites;
 
-    BehaviorSubject<List<MessageData>> subject = BehaviorSubject.createDefault(initialList);
+    private final BehaviorSubject<List<MessageData>> subject;
 
     @Inject
     LocalStorage() {
+        this.subject = BehaviorSubject.createDefault(initialList);
     }
 
 //    public Completable updateAppSettings(AppSettings settings) {
@@ -64,7 +66,24 @@ public class LocalStorage {
         prefs.edit()
                 .putString(MESSAGE_HISTORY, gson.toJson(messages))
                 .apply();
-        subject.onNext(messages);
+        if (showOnlyFavorites) {
+            subject.onNext(new ArrayList<>());
+            subject.onNext(filterOutFavorites(messages));
+        } else {
+            subject.onNext(messages);
+        }
+    }
+
+    private List<MessageData> filterOutFavorites(List<MessageData> messages) {
+        return messages.stream()
+                .filter(MessageData::isFavorite)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public void showFavoritesOnly() {
+        showOnlyFavorites = !showOnlyFavorites;
+        refreshMessages();
     }
 
     public List<MessageData> getList() {
@@ -75,7 +94,7 @@ public class LocalStorage {
     }
 
     public Observable<List<MessageData>> getMessages() {
-        return subject.map(list -> getList());
+        return subject;
     }
 
     public void addMessage(MessageData message) {
@@ -91,4 +110,12 @@ public class LocalStorage {
         updateMessageList(list);
     }
 
+    public void refreshMessages() {
+        if (showOnlyFavorites) {
+            subject.onNext(new ArrayList<>());
+            subject.onNext(filterOutFavorites(getList()));
+        } else {
+            subject.onNext(getList());
+        }
+    }
 }

@@ -79,6 +79,14 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
                     getViewModel().selectDomainMessage(null);
                     getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
                     break;
+                case ON_FULL_LIST:
+                    getViewModel().selectDomainMessage(null);
+                    getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
+                    RecyclerView.LayoutManager lm = getViewDataBinding().recyclerMessages.getLayoutManager();
+                    if (lm != null) {
+                        lm.scrollToPosition((int) action.getData());
+                    }
+                    break;
                 case ON_ITEM_CLICK:
                     MessageModel messageModel = (MessageModel) action.getData();
                     if (Message.Type.isClickable(messageModel.getType())) {

@@ -34,6 +34,12 @@ public class MessageRepository implements IMessageRepository {
     }
 
     @Override
+    public Observable<List<Message>> getFullMessages() {
+        return Observable.just(localStorage.getList())
+                .map(data -> Mappers.getMapper(MessageData.Mappers.class).mapAllFromData(data));
+    }
+
+    @Override
     public Observable<List<Message>> getMessages() {
         return localStorage.getMessages()
                 .map(data -> Mappers.getMapper(MessageData.Mappers.class).mapAllFromData(data));
@@ -72,6 +78,18 @@ public class MessageRepository implements IMessageRepository {
     @Override
     public Completable updateMessages(List<Message> message) {
         localStorage.updateMessageList(Mappers.getMapper(MessageData.Mappers.class).mapAllToData(message));
+        return Completable.complete();
+    }
+
+    @Override
+    public Completable showFavoriteMessages() {
+        localStorage.showFavoritesOnly();
+        return Completable.complete();
+    }
+
+    @Override
+    public Completable refreshMessages() {
+        localStorage.refreshMessages();
         return Completable.complete();
     }
 }

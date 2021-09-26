@@ -17,9 +17,7 @@
         android:paddingStart="@dimen/message_padding_sides"
         android:paddingTop="@dimen/message_padding_constraint_top"
         android:paddingEnd="@dimen/message_padding_sides"
-        android:paddingBottom="@dimen/message_padding_constraint_bottom"
-        visible="@{viewmodel.message.isVisible}">
-
+        android:paddingBottom="@dimen/message_padding_constraint_bottom">
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@id/bubble"

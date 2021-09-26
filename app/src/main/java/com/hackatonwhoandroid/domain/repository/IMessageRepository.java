@@ -11,6 +11,13 @@ public interface IMessageRepository {
 
     Completable sendMessageDomain(Message message);
 
+    Observable<List<Message>> getFullMessages();
+
     Observable<List<Message>> getMessages();
+
     Completable updateMessages(List<Message> message);
+
+    Completable showFavoriteMessages();
+
+    Completable refreshMessages();
 }

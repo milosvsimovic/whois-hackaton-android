@@ -12,8 +12,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.hackatonwhoandroid.domain.exceptions.NoNetworkException;
 import com.hackatonwhoandroid.domain.model.Message;
 import com.hackatonwhoandroid.domain.usecase.FavoriteMessageMarkUseCase;
-import com.hackatonwhoandroid.domain.usecase.GetMessagesUseCase;
+import com.hackatonwhoandroid.domain.usecase.RefreshMessagesUseCase;
+import com.hackatonwhoandroid.domain.usecase.SubscribeForMessagesUseCase;
 import com.hackatonwhoandroid.domain.usecase.SendMessageDomainUseCase;
+import com.hackatonwhoandroid.domain.usecase.ShowFavoriteMessagesUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
 import com.hackatonwhoandroid.utils.Toaster;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
@@ -43,10 +45,16 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     SendMessageDomainUseCase sendMessageDomainUseCase;
 
     @Inject
-    GetMessagesUseCase getMessagesUseCase;
+    SubscribeForMessagesUseCase subscribeForMessagesUseCase;
 
     @Inject
     FavoriteMessageMarkUseCase favoriteMessageMarkUseCase;
+
+    @Inject
+    ShowFavoriteMessagesUseCase showFavoriteMessagesUseCase;
+
+    @Inject
+    RefreshMessagesUseCase refreshMessagesUseCase;
 
     @Inject
     Resources resources;
@@ -64,14 +72,21 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public void initMessages() {
-        addDisposable(getMessagesUseCase.execute()
+        addDisposable(subscribeForMessagesUseCase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         messages -> {
                             List<MessageModel> list = Mappers.getMapper(MessageModel.Mappers.class).mapAll(messages, resources);
                             this.messages.setValue(list);
-                            dispatchAction(ON_LIST_UPDATE, list.size());
+                        },
+                        this::handleOnError
+                ));
+        addDisposable(refreshMessagesUseCase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
                         },
                         this::handleOnError
                 ));
@@ -103,7 +118,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
         switch (action) {
             case FAVORITE:
-                Message message =Mappers.getMapper(MessageModel.Mappers.class).mapToMessage(selectedDomainMessage);
+                Message message = Mappers.getMapper(MessageModel.Mappers.class).mapToMessage(selectedDomainMessage);
                 addDisposable(favoriteMessageMarkUseCase.execute(message)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -113,18 +128,6 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                                 },
                                 this::handleOnError
                         ));
-//                // toggle message favorite boolean
-//                List<MessageModel> messages = this.messages.getValue();
-//                if (messages != null) {
-//                    boolean isFavorite = !selectedDomainMessage.isFavorite();
-//                    for (MessageModel element : messages) {
-//                        // all elements with the same body (domain name) should toggle favorites state
-//                        if (Message.Type.isClickable(element.getType()) && element.getBody().equals(selectedDomainMessage.getBody())) {
-//                            element.setFavorite(isFavorite);
-//                        }
-//                    }
-//                    this.messages.setValue(messages);
-//                }
                 break;
             case REFRESH:
                 // resend message with domain name
@@ -144,23 +147,34 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public void showFavorites(boolean show) {
-        List<MessageModel> messages = this.messages.getValue();
 
-        List<String> favorites = new ArrayList<>();
+        addDisposable(showFavoriteMessagesUseCase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
+                            dispatchAction(ON_LIST_UPDATE);
+                        },
+                        this::handleOnError
+                ));
 
-        for (int i = messages.size() - 1; i > 0; i--) {
-            MessageModel element = messages.get(i);
-            if (!Message.Type.isClickable(element.getType())) {
-                element.setVisible(show);
-            } else {
-                if (!favorites.contains(element.getBody())) {
-                    favorites.add(element.getBody());
-                } else {
-                    element.setVisible(show);
-                }
-            }
-        }
-        this.messages.setValue(messages);
+//        List<MessageModel> messages = this.messages.getValue();
+//
+//        List<String> favorites = new ArrayList<>();
+//
+//        for (int i = messages.size() - 1; i > 0; i--) {
+//            MessageModel element = messages.get(i);
+//            if (!Message.Type.isClickable(element.getType())) {
+//                element.setVisible(show);
+//            } else {
+//                if (!favorites.contains(element.getBody())) {
+//                    favorites.add(element.getBody());
+//                } else {
+//                    element.setVisible(show);
+//                }
+//            }
+//        }
+//        this.messages.setValue(messages);
     }
 
 //    public LiveData<Boolean> showNoFavoritesView() {

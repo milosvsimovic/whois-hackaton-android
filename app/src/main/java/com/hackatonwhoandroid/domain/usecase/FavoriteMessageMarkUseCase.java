@@ -31,7 +31,7 @@ public class FavoriteMessageMarkUseCase implements BaseParamUseCase<Message, Com
 
 
         String domainName = message.getBody();
-        List<Message> list = messageRepository.getMessages().firstElement().blockingGet();
+        List<Message> list = messageRepository.getFullMessages().firstElement().blockingGet();
         if (list == null || list.size() == 0) {
             return Completable.complete();
         }
