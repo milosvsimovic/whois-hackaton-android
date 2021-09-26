@@ -20,7 +20,7 @@ import io.reactivex.rxjava3.core.Completable;
 public class SendMessageDomainUseCase implements BaseParamUseCase<String, Completable> {
 
     Pattern domainValidatorPattern = Pattern.compile("^((?!-)[A-Za-z0-9\\p{IsCyrillic}-]{1,63}(?<!-)\\.)+[A-Za-z\\p{IsCyrillic}]{2,6}$");
-    List<String> validDomains = Arrays.asList("rs", "срб", "net", "com");
+    List<String> validDomains = Arrays.asList("rs", "срб", "ru", "рф", "mk", "мкд", "org", "орг", "com", "ком", "net", "uk", "se");
 
     @Inject
     IMessageRepository messageRepository;
