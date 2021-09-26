@@ -37,6 +37,8 @@ public class SendMessageDomainUseCase implements BaseParamUseCase<String, Comple
         domainName = domainName.toLowerCase();
         Matcher matcher = domainValidatorPattern.matcher(domainName);
 
+//        if("")
+
         if (matcher.matches()) {
             String[] split = domainName.split("\\.");
             if (validDomains.contains(split[1])) {
