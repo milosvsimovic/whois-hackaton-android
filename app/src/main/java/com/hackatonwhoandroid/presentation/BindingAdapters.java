@@ -66,8 +66,8 @@ public class BindingAdapters {
         }
     }
 
-    @BindingAdapter(value = {"messageTypeTextColor"}, requireAll = false)
-    public static void changeColor(@NonNull TextView view, @Nullable Message.Type messageType) {
+    @BindingAdapter(value = {"messageTypeImageColor"}, requireAll = false)
+    public static void changeImageColor(@NonNull ImageView view, @Nullable Message.Type messageType) {
         if (messageType == null) {
             return;
         }
@@ -75,14 +75,35 @@ public class BindingAdapters {
         switch (messageType) {
             case INFO:
             case TEXT:
+                break;
             case DOMAIN_LOADING:
+                view.setImageTintList(ColorStateList.valueOf(resources.getColor(R.color.light_blue)));
+                break;
             case DOMAIN_ACTIVE:
+                view.setImageTintList(ColorStateList.valueOf(resources.getColor(R.color.red)));
+                break;
             case DOMAIN_INACTIVE:
+                view.setImageTintList(ColorStateList.valueOf(resources.getColor(R.color.cornflower_blue_two)));
                 break;
             case DOMAIN_OTHER:
             default:
+                view.setImageTintList(ColorStateList.valueOf(resources.getColor(R.color.light_gray)));
+                break;
+        }
+    }
+
+    @BindingAdapter(value = {"messageTypeTextColor"}, requireAll = false)
+    public static void changeColor(@NonNull TextView view, @Nullable Message.Type messageType) {
+        if (messageType == null) {
+            return;
+        }
+        Resources resources = view.getContext().getResources();
+        switch (messageType) {
+            case DOMAIN_OTHER:
                 view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.cornflower_blue_two)));
                 break;
+            default:
+                view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.white)));
         }
     }
 

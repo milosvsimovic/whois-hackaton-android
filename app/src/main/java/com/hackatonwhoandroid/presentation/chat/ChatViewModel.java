@@ -171,7 +171,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                     boolean isFavorite = !selectedDomainMessage.isFavorite();
                     for (MessageModel element : messages) {
                         // all elements with the same body (domain name) should toggle favorites state
-                        if (element.getType() == Message.Type.DOMAIN_LOADING && element.getBody().equals(selectedDomainMessage.getBody())) {
+                        if (Message.Type.isClickable(element.getType()) && element.getBody().equals(selectedDomainMessage.getBody())) {
                             element.setFavorite(isFavorite);
                         }
                     }
