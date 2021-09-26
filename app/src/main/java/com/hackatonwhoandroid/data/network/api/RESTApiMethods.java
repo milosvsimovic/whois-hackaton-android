@@ -10,6 +10,6 @@ import retrofit2.http.Query;
 public interface RESTApiMethods {
 
     @GET("whois")
-    Single<WhoIsDtoResponse> getWhois(@Query("domain_name") String domainName);
+    Single<WhoIsDtoResponse> fetchWhoisDomain(@Query("domain_name") String domainName);
 
 }

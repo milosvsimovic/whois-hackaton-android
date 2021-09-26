@@ -5,6 +5,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hackatonwhoandroid.R;
 import com.hackatonwhoandroid.databinding.FragmentChatBinding;
@@ -44,8 +45,12 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initRecycler();
-        getViewModel().getActions().observe(getViewLifecycleOwner(), actionCodeAction -> {
-            switch (actionCodeAction.getCode()) {
+        getViewModel().getActions().observe(getViewLifecycleOwner(), action -> {
+            switch (action.getCode()) {
+//                case ON_LIST_UPDATE:
+//                    int listSize = (int) action.getData();
+//                    getViewDataBinding().recyclerMessages.getLayoutManager().scrollToPosition(listSize);
+//                    break;
                 case ON_DOMAIN_SUBMIT:
                     getViewModel().selectDomainMessage(null);
                     getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
@@ -57,25 +62,22 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
                     break;
             }
         });
+        getViewModel().initMessages();
     }
 
-    public void handleFavoritesButtonToggle() {
-        getViewModel().toggleFavorites();
+    public void handleFavoritesButtonToggle(boolean show) {
+        getViewModel().showFavorites(show);
     }
 
     private void initRecycler() {
         adapter.setListener(action -> {
             switch (action.getCode()) {
+                case ON_LIST_ADDED:
                 case ON_ITEM_ADDED:
-//                    RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getViewDataBinding().recyclerMessages.getContext()) {
-//                        @Override protected int getVerticalSnapPreference() {
-//                            return LinearSmoothScroller.SNAP_TO_START;
-//                        }
-//                    };
-//                    smoothScroller.
-//                    smoothScroller.setTargetPosition((int) action.getData());
-//                    getViewDataBinding().recyclerMessages.getLayoutManager().startSmoothScroll(smoothScroller);
-                    getViewDataBinding().recyclerMessages.getLayoutManager().scrollToPosition((int) action.getData());
+                    RecyclerView.LayoutManager layoutManager = getViewDataBinding().recyclerMessages.getLayoutManager();
+                    if (layoutManager != null) {
+                        layoutManager.scrollToPosition((int) action.getData());
+                    }
                     break;
                 case ON_ITEM_CLICK:
                     MessageModel messageModel = (MessageModel) action.getData();

@@ -23,14 +23,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 case ACTION_FAVORITES:
                     ChatFragment chatFragment = (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                     if (chatFragment != null) {
-                        chatFragment.handleFavoritesButtonToggle();
+                        chatFragment.handleFavoritesButtonToggle((Boolean) action.getData());
                     }
                     break;
-
-
             }
         });
-
     }
 
     private void handleFragmentActions(Action<ChatFragment.ActionCode> action) {

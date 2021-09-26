@@ -1,7 +1,7 @@
 package com.hackatonwhoandroid.di.data;
 
-import com.hackatonwhoandroid.data.repository.WhoisRepository;
-import com.hackatonwhoandroid.domain.repository.IWhoisRepository;
+import com.hackatonwhoandroid.data.repository.MessageRepository;
+import com.hackatonwhoandroid.domain.repository.IMessageRepository;
 
 import javax.inject.Singleton;
 
@@ -13,6 +13,6 @@ public abstract class DataModule {
 
     @Singleton
     @Binds
-    public abstract IWhoisRepository bindExampleRepository(WhoisRepository repository);
+    public abstract IMessageRepository bindExampleRepository(MessageRepository repository);
 
 }

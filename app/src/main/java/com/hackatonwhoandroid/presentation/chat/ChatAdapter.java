@@ -2,6 +2,7 @@ package com.hackatonwhoandroid.presentation.chat;
 
 import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_CLICK;
 import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_ADDED;
+import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_LIST_ADDED;
 
 import android.annotation.SuppressLint;
 
@@ -13,6 +14,8 @@ import com.hackatonwhoandroid.utils.base.presentation.IActionListener;
 import com.hackatonwhoandroid.utils.base.presentation.adapter.BaseRecyclerAdapter;
 import com.hackatonwhoandroid.utils.base.presentation.adapter.BindingViewHolder;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.ActionProvider;
+
+import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -64,22 +67,26 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void setItems(List<MessageModel> items) {
+        if (items == null || items.size() == 0) {
+            return;
+        }
         if (getItemCount() == 0) {
             super.setItems(items);
+            listener.onAction(actionProvider.provide(ON_LIST_ADDED, getItemCount() - 1));
         } else {
             // state update for one or more elements
             if (items.size() == getItemCount()) {
                 notifyDataSetChanged();
             } else {
                 // add or remove element
-                int lastElementNumber = getItemCount() - 1;
-                MessageModel lastMessage = get(lastElementNumber);
+                int lastElementPosition = getItemCount() - 1;
+                MessageModel lastMessage = get(lastElementPosition);
 
-                for (MessageModel element : items) {
-                    if (lastMessage.getTimestamp().isBefore(element.getTimestamp())) {
-                        update(lastElementNumber, lastMessage);
-                        add(element);
-                        listener.onAction(actionProvider.provide(ON_ITEM_ADDED, lastElementNumber));
+                for (int i = 0; i < items.size(); i++) {
+                    if (new DateTime(lastMessage.getTimestamp()).isBefore(new DateTime(items.get(i).getTimestamp()))) {
+                        update(lastElementPosition, items.get(i - 1)); // update previous element
+                        add(items.get(i));
+                        listener.onAction(actionProvider.provide(ON_ITEM_ADDED, getItemCount() - 1));
                     }
                 }
             }
@@ -87,7 +94,7 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
     }
 
     public enum ActionCode {
-        ON_ITEM_ADDED, ON_ITEM_CLICK
+        ON_ITEM_ADDED, ON_ITEM_CLICK, ON_LIST_ADDED
     }
 
 }
