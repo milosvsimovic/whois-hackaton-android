@@ -55,14 +55,14 @@ public class WhoIsDtoResponse {
             String body;
             DomainStatus domainStatus = DomainStatus.valueOf(response.domainStatus);
             switch (domainStatus) {
-                case Active:
-                    body = String.format(resources.getString(R.string.chat_domain_is_already_registred),
-                            response.getDomainName(), response.getRegistrationDate(), response.getExpirationDate());
-                    break;
                 case Inactive:
                 case NotRegistered:
                     body = String.format(resources.getString(R.string.chat_domain_is_available),
                             response.getDomainName());
+                    return body;
+                case Active:
+                    body = String.format(resources.getString(R.string.chat_domain_is_already_registred),
+                            response.getDomainName(), response.getRegistrationDate(), response.getExpirationDate());
                     break;
                 case Expired:
                     body = String.format(resources.getString(R.string.chat_domain_expired_not_available_yet),
@@ -75,8 +75,7 @@ public class WhoIsDtoResponse {
                     body = String.format(resources.getString(R.string.chat_domain_not_available),
                             response.getDomainName());
             }
-
-            return body + "/n" + response.getRawData() + "/n" + "Host_address: " + response.getHostAddress()  + "/n" + "Name_servers: " + response.getNameServers();
+            return body + "\n" + response.getRawData() + "\n" + "Host_address: " + response.getHostAddress()  + "\n"  + "Name_servers: " + response.getNameServers();
         }
 
         Message.Type getType() {
