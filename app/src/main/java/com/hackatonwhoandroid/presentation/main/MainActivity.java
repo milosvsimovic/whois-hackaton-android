@@ -11,13 +11,16 @@ import com.hackatonwhoandroid.utils.base.presentation.BaseActivity;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.Action;
 import com.hackatonwhoandroid.utils.base.utils.LocaleHelper;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getViewModel().callExampleMethod();
-        addFragment(R.id.fragment_container, ChatFragment.newInstance(this::handleFragmentActions));
+        ChatFragment currentFragment = ChatFragment.newInstance(this::handleFragmentActions);
+        addFragment(R.id.fragment_container, currentFragment);
 
         getViewModel().getActions().observe(this, action -> {
             switch (action.getCode()) {
@@ -30,13 +33,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 case TRANSLATE:
                     String currentLang = LocaleHelper.getPersistedData(getApplicationContext(), "en");
                     if (currentLang.equals("en")) {
-                        LocaleHelper.setLocale(getApplicationContext(), "sr");
+                        LocaleHelper.setLocale(getBaseContext(), "sr");
                     } else {
-                        LocaleHelper.setLocale(getApplicationContext(), "en");
+                        LocaleHelper.setLocale(getBaseContext(), "en");
                     }
+                    //recreate();
                     break;
-
-
             }
         });
 

@@ -21,7 +21,7 @@ public class HackatonApplication extends BaseApplication {
 
     @Override
     protected void attachBaseContext(Context context) {
-        super.attachBaseContext(LocaleHelper.onAttach(context, "en"));
+        super.attachBaseContext(LocaleHelper.onAttach(context, "sr"));
     }
 
     @Override
