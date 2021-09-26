@@ -79,7 +79,7 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
                     break;
                 case ON_ITEM_CLICK:
                     MessageModel messageModel = (MessageModel) action.getData();
-                    if (messageModel.getType() == Message.Type.DOMAIN_LOADING) {
+                    if (Message.Type.isClickable(messageModel.getType())) {
                         getViewModel().selectDomainMessage(messageModel);
                         getViewDataBinding().layoutDomainActions.setVisibility(View.VISIBLE);
                     } else {

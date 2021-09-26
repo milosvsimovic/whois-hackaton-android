@@ -1,5 +1,7 @@
 package com.hackatonwhoandroid.presentation;
 
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +17,8 @@ import androidx.annotation.StringRes;
 import androidx.databinding.BindingAdapter;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.hackatonwhoandroid.R;
+import com.hackatonwhoandroid.domain.model.Message;
 import com.hackatonwhoandroid.utils.SimpleTextWatcher;
 import com.stfalcon.chatkit.messages.MessageInput;
 
@@ -33,6 +37,52 @@ public class BindingAdapters {
     public static void bindVisibility(@NonNull View view, @Nullable Boolean visibility, @Nullable Boolean invisibility) {
         if (visibility != null) {
             view.setVisibility(visibility ? View.VISIBLE : invisibility != null && invisibility ? View.INVISIBLE : View.GONE);
+        }
+    }
+
+    @BindingAdapter(value = {"messageType"}, requireAll = false)
+    public static void changeColor(@NonNull View view, @Nullable Message.Type messageType) {
+        if (messageType == null) {
+            return;
+        }
+        Resources resources = view.getContext().getResources();
+        switch (messageType) {
+            case INFO:
+            case TEXT:
+                break;
+            case DOMAIN_LOADING:
+                view.setBackgroundTintList(ColorStateList.valueOf(resources.getColor(R.color.light_blue)));
+                break;
+            case DOMAIN_ACTIVE:
+                view.setBackgroundTintList(ColorStateList.valueOf(resources.getColor(R.color.red)));
+                break;
+            case DOMAIN_INACTIVE:
+                view.setBackgroundTintList(ColorStateList.valueOf(resources.getColor(R.color.cornflower_blue_two)));
+                break;
+            case DOMAIN_OTHER:
+            default:
+                view.setBackgroundTintList(ColorStateList.valueOf(resources.getColor(R.color.light_gray)));
+                break;
+        }
+    }
+
+    @BindingAdapter(value = {"messageTypeTextColor"}, requireAll = false)
+    public static void changeColor(@NonNull TextView view, @Nullable Message.Type messageType) {
+        if (messageType == null) {
+            return;
+        }
+        Resources resources = view.getContext().getResources();
+        switch (messageType) {
+            case INFO:
+            case TEXT:
+            case DOMAIN_LOADING:
+            case DOMAIN_ACTIVE:
+            case DOMAIN_INACTIVE:
+                break;
+            case DOMAIN_OTHER:
+            default:
+                view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.cornflower_blue_two)));
+                break;
         }
     }
 

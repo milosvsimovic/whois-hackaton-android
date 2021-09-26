@@ -2,6 +2,9 @@ package com.hackatonwhoandroid.domain.model;
 
 import org.joda.time.DateTime;
 
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -20,7 +23,15 @@ public class Message {
         DOMAIN_ACTIVE,
         DOMAIN_INACTIVE,
         DOMAIN_OTHER,
-        INFO
+        INFO;
+
+        private static final List<Type> CLICKABLE_STATUS = Arrays.asList(DOMAIN_ACTIVE, DOMAIN_INACTIVE, DOMAIN_OTHER);
+
+        public static boolean isClickable(Type type) {
+            return CLICKABLE_STATUS.contains(type);
+        }
+
+
     }
 
 }

@@ -22,6 +22,7 @@
     <color name="cornflower_blue_light_40">#64bec5f7</color>
     <color name="red">#B30025</color>
     <color name="light_blue">#727EAE</color>
+    <color name="light_gray">#F1F0F0</color>
 
     <color name="dialog_divider">@color/white_three</color>
     <color name="dialog_title_text">@color/dark_gray</color>
