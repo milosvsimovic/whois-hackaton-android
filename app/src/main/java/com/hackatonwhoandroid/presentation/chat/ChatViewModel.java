@@ -219,10 +219,24 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 this.selectedDomainMessage.setValue(null);
                 break;
             case REMINDER:
-                Toaster.showToast(action.toString());
+/*                MessageModel reminder = createReminderMessage("", "Dodaj podsetnik za domen " + selectedDomainMessage.getBody(), "", "PODSETNIK");
+                addToMessages(reminder);*/
                 break;
         }
 
+    }
+
+    @NonNull
+    private MessageModel createReminderMessage(String domain, String name, String domainExtension, String statusMessage) {
+        MessageModel userMessage = new MessageModel();
+        userMessage.setBody(domain);
+        userMessage.setDomainName(name);
+        userMessage.setTimestamp(DateTime.now());
+        userMessage.setCreatedByUser(true);
+        userMessage.setFavorite(false);
+        userMessage.setType(Message.Type.REMINDER);
+        userMessage.setStatusMessage(statusMessage);
+        return userMessage;
     }
 
     public void addToSearchHistory(String newValue) {
