@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class MessageModel {
 
     public String body;
+    public String domainName;
+    public String domainExtension;
     public String statusMessage;
     @NotNull
     public DateTime timestamp;

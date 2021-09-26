@@ -22,8 +22,11 @@ import org.joda.time.DateTime;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -46,6 +49,9 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
     @Inject
     Resources resources;
+
+    Pattern domainValidatorPattern = Pattern.compile("^((?!-)[A-Za-z0-9\\p{IsCyrillic}-]{1,63}(?<!-)\\.)+[A-Za-z\\p{IsCyrillic}]{2,6}$");
+    List<String> validDomains = Arrays.asList("rs", "срб", "net", "com");
 
     private final MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
     private final MutableLiveData<MessageModel> selectedDomainMessage = new MutableLiveData<>();
@@ -76,12 +82,23 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public boolean onInputSubmit(String domainName) {
-        sendDomainMessage(domainName.toLowerCase());
+        domainName = domainName.toLowerCase();
+        Matcher matcher = domainValidatorPattern.matcher(domainName);
+        if (matcher.matches()) {
+            String[] split = domainName.split("\\.");
+            if (validDomains.contains(split[1])) {
+                sendDomainMessage(domainName, split[0], "." + split[1]);
+            } else {
+                addToMessages(createBotMessage(String.format(".%s nije podržan. Podržani domeni su %s", split[1], validDomains.toString())));
+            }
+        } else {
+            addToMessages(createBotMessage(String.format("%s nije validan domen", domainName)));
+        }
         return true;
     }
 
-    private void sendDomainMessage(String input) {
-        MessageModel userMessage = createUserMessage(input, resources.getString(R.string.chat_status_message_checking_domain));
+    private void sendDomainMessage(String input, String name, String extension) {
+        MessageModel userMessage = createUserMessage(input, name, extension, resources.getString(R.string.chat_status_message_checking_domain));
         addToMessages(userMessage);
         addToSearchHistory(input);
         int messageNumber = getLastMessageNumber();
@@ -134,14 +151,27 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     @NonNull
-    private MessageModel createUserMessage(String input, String statusMessage) {
+    private MessageModel createUserMessage(String domain, String name, String domainExtension, String statusMessage) {
         MessageModel userMessage = new MessageModel();
-        userMessage.setBody(input);
+        userMessage.setBody(domain);
+        userMessage.setDomainName(name);
+        userMessage.setDomainExtension(domainExtension);
         userMessage.setTimestamp(DateTime.now());
         userMessage.setCreatedByUser(true);
         userMessage.setFavorite(false);
         userMessage.setType(Message.Type.DOMAIN_LOADING);
         userMessage.setStatusMessage(statusMessage);
+        return userMessage;
+    }
+
+    @NonNull
+    private MessageModel createBotMessage(String message) {
+        MessageModel userMessage = new MessageModel();
+        userMessage.setBody(message);
+        userMessage.setTimestamp(DateTime.now());
+        userMessage.setCreatedByUser(false);
+        userMessage.setFavorite(false);
+        userMessage.setType(Message.Type.TEXT);
         return userMessage;
     }
 
@@ -185,7 +215,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 break;
             case REFRESH:
                 // resend message with domain name
-                sendDomainMessage(selectedDomainMessage.getBody());
+                sendDomainMessage(selectedDomainMessage.getBody(), selectedDomainMessage.getDomainName(), selectedDomainMessage.getDomainExtension());
                 this.selectedDomainMessage.setValue(null);
                 break;
             case REMINDER:
