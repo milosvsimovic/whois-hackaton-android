@@ -12,5 +12,7 @@
     <string name="chat_status_message_active">ZAUZET</string>
     <string name="chat_status_message_inactive">SLOBODAN</string>
     <string name="chat_status_message_otherStatus">TRENUTNO NIJE DOSTUPAN</string>
+    <string name="chat_domain_is_reserverd">Domen %s je rezervisan</string>
+    <string name="chat_status_message_reserved">REZERVISAN</string>
 
 </resources>

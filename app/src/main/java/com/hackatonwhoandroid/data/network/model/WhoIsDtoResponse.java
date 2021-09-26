@@ -59,6 +59,9 @@ public class WhoIsDtoResponse {
                     body = String.format(resources.getString(R.string.chat_domain_expired_not_available_yet),
                             response.getDomainName(), response.getExpirationDate());
                     break;
+                case Reserved:
+                    body = String.format(resources.getString(R.string.chat_domain_is_reserverd), response.getDomainName());
+                    break;
                 default:
                     body = String.format(resources.getString(R.string.chat_domain_not_available),
                             response.getDomainName());

@@ -120,6 +120,11 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 userMessage.setType(Message.Type.DOMAIN_INACTIVE);
                 editMessage(messageNumber, userMessage);
                 break;
+            case Reserved:
+                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_reserved));
+                userMessage.setType(Message.Type.DOMAIN_OTHER);
+                editMessage(messageNumber, userMessage);
+                break;
             default:
                 userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_otherStatus));
                 userMessage.setType(Message.Type.DOMAIN_OTHER);
