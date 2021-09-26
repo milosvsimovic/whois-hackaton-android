@@ -3,6 +3,7 @@ package com.hackatonwhoandroid.domain.model;
 public enum DomainStatus {
 
     NotRegistered,
+    Reserved,
     Active,
     Inactive,
     Expired,
@@ -21,5 +22,18 @@ public enum DomainStatus {
     ServerTradeProhibited,
     ServerRegistrantNameChangeProhibited,
     ServerContactDataChangeProhibited,
-    ServerDnsChangeProhibited
+    ServerDnsChangeProhibited,
+
+    PendingCreate,
+    PendingRenew,
+    AutoRenewPeriod,
+    PendingRestore,
+    RedemptionPeriod,
+    RenewPeriod,
+    ServerRenewProhibited,
+    TransferPeriod,
+    ClientDeleteProhibited,
+    ClientHold,
+    ClientRenewProhibited,
+    ClientTransferProhibited,
 }

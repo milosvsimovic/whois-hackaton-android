@@ -46,7 +46,7 @@ public class MessageRepository implements IMessageRepository {
     }
 
     @Override
-    public Completable sendMessageDomain(Message message) {
+    public Completable sendMessageMessage(Message message) {
         localStorage.addMessage(Mappers.getMapper(MessageData.Mappers.class).mapToData(message));
         return apiMethodsServer.fetchWhoisDomain(message.getBody())
                 .map(whoisResponse -> {

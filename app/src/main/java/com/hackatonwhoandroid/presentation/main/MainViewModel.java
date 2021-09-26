@@ -1,6 +1,7 @@
 package com.hackatonwhoandroid.presentation.main;
 
 import static com.hackatonwhoandroid.presentation.main.MainViewModel.ActionCode.ACTION_FAVORITES;
+import static com.hackatonwhoandroid.presentation.main.MainViewModel.ActionCode.TRANSLATE;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -52,12 +53,16 @@ public class MainViewModel extends BaseViewModel<MainViewModel.ActionCode> {
         dispatchAction(ACTION_FAVORITES, showFavorites.getValue());
     }
 
+    public void onActionButtonTranslateClick(){
+        dispatchAction(TRANSLATE);
+    }
+
     public void setModelData(MainModel data) {
         model.setValue(data);
     }
 
     public enum ActionCode {
-        ERROR, ACTION_FAVORITES
+        ERROR, ACTION_FAVORITES, TRANSLATE
     }
 
 }

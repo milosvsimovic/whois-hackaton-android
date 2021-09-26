@@ -59,6 +59,8 @@ public class BindingAdapters {
             case DOMAIN_INACTIVE:
                 view.setBackgroundTintList(ColorStateList.valueOf(resources.getColor(R.color.cornflower_blue_two)));
                 break;
+            case REMINDER:
+                view.setBackgroundTintList(ColorStateList.valueOf(resources.getColor(R.color.white)));
             case DOMAIN_OTHER:
             default:
                 view.setBackgroundTintList(ColorStateList.valueOf(resources.getColor(R.color.light_gray)));
@@ -102,6 +104,8 @@ public class BindingAdapters {
             case DOMAIN_OTHER:
                 view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.cornflower_blue_two)));
                 break;
+            case REMINDER:
+                view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.gray)));
             default:
                 view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.white)));
         }

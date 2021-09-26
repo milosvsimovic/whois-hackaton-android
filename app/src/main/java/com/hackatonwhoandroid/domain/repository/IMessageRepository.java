@@ -9,7 +9,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 public interface IMessageRepository {
 
-    Completable sendMessageDomain(Message message);
+    Completable sendMessageMessage(Message message);
 
     Observable<List<Message>> getFullMessages();
 

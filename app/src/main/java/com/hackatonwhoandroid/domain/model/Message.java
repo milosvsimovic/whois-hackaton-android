@@ -21,6 +21,7 @@ public class Message {
         DOMAIN_ACTIVE,
         DOMAIN_INACTIVE,
         DOMAIN_OTHER,
+        REMINDER,
         INFO;
 
         private static final List<Type> DOMAIN_RESPONSE_STATUS = Arrays.asList(DOMAIN_ACTIVE, DOMAIN_INACTIVE, DOMAIN_OTHER);

@@ -9,6 +9,7 @@ import com.hackatonwhoandroid.databinding.ActivityMainBinding;
 import com.hackatonwhoandroid.presentation.chat.ChatFragment;
 import com.hackatonwhoandroid.utils.base.presentation.BaseActivity;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.Action;
+import com.hackatonwhoandroid.utils.base.utils.LocaleHelper;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
 
@@ -16,7 +17,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getViewModel().callExampleMethod();
-        addFragment(R.id.fragment_container, ChatFragment.newInstance(this::handleFragmentActions));
+        ChatFragment currentFragment = ChatFragment.newInstance(this::handleFragmentActions);
+        addFragment(R.id.fragment_container, currentFragment);
 
         getViewModel().getActions().observe(this, action -> {
             switch (action.getCode()) {
@@ -26,8 +28,18 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         chatFragment.handleFavoritesButtonToggle((Boolean) action.getData());
                     }
                     break;
+                case TRANSLATE:
+                    String currentLang = LocaleHelper.getPersistedData(getApplicationContext(), "en");
+                    if (currentLang.equals("en")) {
+                        LocaleHelper.setLocale(getBaseContext(), "sr");
+                    } else {
+                        LocaleHelper.setLocale(getBaseContext(), "en");
+                    }
+                    //recreate();
+                    break;
             }
         });
+
     }
 
     private void handleFragmentActions(Action<ChatFragment.ActionCode> action) {

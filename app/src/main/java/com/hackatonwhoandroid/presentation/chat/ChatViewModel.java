@@ -6,6 +6,7 @@ import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.
 
 import android.content.res.Resources;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
@@ -13,11 +14,10 @@ import com.hackatonwhoandroid.domain.exceptions.NoNetworkException;
 import com.hackatonwhoandroid.domain.model.Message;
 import com.hackatonwhoandroid.domain.usecase.FavoriteMessageMarkUseCase;
 import com.hackatonwhoandroid.domain.usecase.RefreshMessagesUseCase;
-import com.hackatonwhoandroid.domain.usecase.SubscribeForMessagesUseCase;
 import com.hackatonwhoandroid.domain.usecase.SendMessageDomainUseCase;
 import com.hackatonwhoandroid.domain.usecase.ShowFavoriteMessagesUseCase;
+import com.hackatonwhoandroid.domain.usecase.SubscribeForMessagesUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
-import com.hackatonwhoandroid.utils.Toaster;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
 
 import org.mapstruct.factory.Mappers;
@@ -93,9 +93,15 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public boolean onInputSubmit(String domainName) {
-        sendDomainMessage(domainName.toLowerCase());
+        sendDomainMessage(domainName);
         return true;
     }
+
+//    MessageModel userMessage = createUserMessage(input, name, extension, resources.getString(R.string.chat_status_message_checking_domain));
+//    addToMessages(userMessage);
+//    addToSearchHistory(input);
+//    int messageNumber = getLastMessageNumber();
+//    dispatchAction(ON_DOMAIN_SUBMIT);
 
     private void sendDomainMessage(String input) {
         dispatchAction(ON_DOMAIN_SUBMIT);
@@ -135,19 +141,27 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 this.selectedDomainMessage.setValue(null);
                 break;
             case REMINDER:
-                Toaster.showToast(action.toString());
+/*                MessageModel reminder = createReminderMessage("", "Dodaj podsetnik za domen " + selectedDomainMessage.getBody(), "", "PODSETNIK");
+                addToMessages(reminder);*/
                 break;
         }
 
     }
 
-    public void addToSearchHistory(String newValue) {
-        searchHistory.removeIf(element -> element.equals(newValue));
-        searchHistory.add(0, newValue);
+    @NonNull
+    private MessageModel createReminderMessage(String domain, String name, String domainExtension, String statusMessage) {
+        MessageModel userMessage = new MessageModel();
+        userMessage.setBody(domain);
+        userMessage.setDomainName(name);
+        userMessage.setTimestamp(System.currentTimeMillis());
+        userMessage.setCreatedByUser(true);
+        userMessage.setFavorite(false);
+        userMessage.setType(Message.Type.REMINDER);
+        userMessage.setStatusMessage(statusMessage);
+        return userMessage;
     }
 
     public void showFavorites(boolean show) {
-
         addDisposable(showFavoriteMessagesUseCase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -157,77 +171,8 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                         },
                         this::handleOnError
                 ));
-
-//        List<MessageModel> messages = this.messages.getValue();
-//
-//        List<String> favorites = new ArrayList<>();
-//
-//        for (int i = messages.size() - 1; i > 0; i--) {
-//            MessageModel element = messages.get(i);
-//            if (!Message.Type.isClickable(element.getType())) {
-//                element.setVisible(show);
-//            } else {
-//                if (!favorites.contains(element.getBody())) {
-//                    favorites.add(element.getBody());
-//                } else {
-//                    element.setVisible(show);
-//                }
-//            }
-//        }
-//        this.messages.setValue(messages);
     }
 
-//    public LiveData<Boolean> showNoFavoritesView() {
-//        return Transformations.map(list, input -> LineType.FAVORITE.equals(selectedLineGroup.getValue()) && list.getValue() != null && list.getValue().isEmpty());
-//    }
-
-    //    @SuppressWarnings("WeakerAccess")
-//    public void syncData() {
-//        analytics.syncSwiped();
-//        addDisposable(syncDataUseCase.execute()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                        syncResponse -> {
-//                            noNetwork.setValue(false);
-//                            checkForAppUpdate(syncResponse);
-//                        },
-//                        this::handleOnError
-//                ));
-//    }
-//
-//    private void checkForAppUpdate(SyncResponse syncResponse) {
-//        addDisposable(checkForAppUpdateUseCase.execute()
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                        hasAppUpdate -> {
-//                            Log.d(TAG, "Has App update");
-//                            dispatchAction(ActionCode.UPDATE_AVAILABLE);
-//                        },
-//                        error -> dispatchAction(ActionCode.ERROR, errorHandler.parse(error)),
-//                        () -> {
-//                            Log.d(TAG, "Sync finished");
-//                            dispatchAction(ActionCode.ON_UPDATE_FINISH, syncResponse);
-//                        }
-//                ));
-//    }
-//
-//    @SuppressWarnings("WeakerAccess")
-//    public void getLines() {
-//        addDisposable(getLinesUseCase.execute()
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                        list -> {
-//                            dispatchAction(ActionCode.ON_LIST);
-//                            Log.d(TAG, "Lines: " + list.size() + " ");
-//                            this.list.setValue(Mappers.getMapper(ChatItemModel.Mappers.class).mapAll(list));
-//                        },
-//                        this::handleOnError
-//                ));
-//    }
-//
     private void handleOnError(Throwable error) {
         if (error instanceof NoNetworkException) {
 //            noNetwork.setValue(true);
