@@ -14,5 +14,7 @@
     <string name="chat_status_message_otherStatus">TRENUTNO NIJE DOSTUPAN</string>
     <string name="chat_domain_is_reserverd">Domen %s je rezervisan</string>
     <string name="chat_status_message_reserved">REZERVISAN</string>
+    <string name="domain_is_not_suported_for_extension">.%s nije podržan. Podržani domeni su %s</string>
+    <string name="domain_is_not_valid">%s nije validan domen</string>
 
 </resources>

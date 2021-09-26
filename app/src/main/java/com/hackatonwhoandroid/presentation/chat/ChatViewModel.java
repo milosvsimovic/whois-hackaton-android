@@ -89,10 +89,10 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
             if (validDomains.contains(split[1])) {
                 sendDomainMessage(domainName, split[0], "." + split[1]);
             } else {
-                addToMessages(createBotMessage(String.format(".%s nije podržan. Podržani domeni su %s", split[1], validDomains.toString())));
+                addToMessages(createBotMessage(String.format(resources.getString(R.string.domain_is_not_suported_for_extension), split[1], validDomains.toString())));
             }
         } else {
-            addToMessages(createBotMessage(String.format("%s nije validan domen", domainName)));
+            addToMessages(createBotMessage(String.format(resources.getString(R.string.domain_is_not_valid), domainName)));
         }
         return true;
     }
