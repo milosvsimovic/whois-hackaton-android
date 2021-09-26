@@ -52,7 +52,7 @@ public class MessageModel {
         String getStatusMessage(Message message, Resources resources) {
             DomainStatus domainStatus = message.getDomainStatus();
             if (domainStatus == null) {
-                return null;
+                return resources.getString(R.string.chat_status_message_checking_domain);
             }
             switch (domainStatus) {
                 case Active:
@@ -65,36 +65,36 @@ public class MessageModel {
             }
         }
 
-        String getDomainName(Message message){
-            if(message.getType().isClickable() || message.getType() == Message.Type.DOMAIN_LOADING){
+        String getDomainName(Message message) {
+            if (message.getType().isClickable() || message.getType() == Message.Type.DOMAIN_LOADING) {
                 String domainName = message.getBody();
                 domainName = domainName.toLowerCase();
-                try{
+                try {
                     Matcher matcher = domainValidatorPattern.matcher(domainName);
                     if (matcher.matches()) {
                         String[] split = domainName.split("\\.");
                         return split[0];
                     }
                     return StringUtils.EMPTY;
-                } catch (Exception e){
+                } catch (Exception e) {
                     return StringUtils.EMPTY;
                 }
             }
             return StringUtils.EMPTY;
         }
 
-        String getDomainExtension(Message message){
-            if(message.getType().isClickable() || message.getType() == Message.Type.DOMAIN_LOADING){
+        String getDomainExtension(Message message) {
+            if (message.getType().isClickable() || message.getType() == Message.Type.DOMAIN_LOADING) {
                 String domainName = message.getBody();
                 domainName = domainName.toLowerCase();
-                try{
+                try {
                     Matcher matcher = domainValidatorPattern.matcher(domainName);
                     if (matcher.matches()) {
                         String[] split = domainName.split("\\.");
                         return "." + split[1];
                     }
                     return StringUtils.EMPTY;
-                } catch (Exception e){
+                } catch (Exception e) {
                     return StringUtils.EMPTY;
                 }
             }

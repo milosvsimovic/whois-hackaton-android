@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                     } else {
                         LocaleHelper.setLocale(getBaseContext(), "en");
                     }
-                    //recreate();
+                    recreate();
                     break;
             }
         });

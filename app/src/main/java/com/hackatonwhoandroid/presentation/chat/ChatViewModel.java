@@ -141,8 +141,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 this.selectedDomainMessage.setValue(null);
                 break;
             case REMINDER:
-/*                MessageModel reminder = createReminderMessage("", "Dodaj podsetnik za domen " + selectedDomainMessage.getBody(), "", "PODSETNIK");
-                addToMessages(reminder);*/
+                sendDomainMessage("_more_info_");
                 break;
         }
 
