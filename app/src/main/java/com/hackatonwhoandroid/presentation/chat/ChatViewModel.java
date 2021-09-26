@@ -1,8 +1,8 @@
 package com.hackatonwhoandroid.presentation.chat;
 
-import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.CHANGE_COLOR;
 import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_DOMAIN_RESPONSE;
 import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_DOMAIN_SUBMIT;
+import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_LIST_UPDATE;
 
 import android.content.res.Resources;
 
@@ -10,23 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
-import com.hackatonwhoandroid.R;
 import com.hackatonwhoandroid.domain.exceptions.NoNetworkException;
 import com.hackatonwhoandroid.domain.model.Message;
-import com.hackatonwhoandroid.domain.usecase.WhoisUseCase;
+import com.hackatonwhoandroid.domain.usecase.FavoriteMessageMarkUseCase;
+import com.hackatonwhoandroid.domain.usecase.RefreshMessagesUseCase;
+import com.hackatonwhoandroid.domain.usecase.SendMessageDomainUseCase;
+import com.hackatonwhoandroid.domain.usecase.ShowFavoriteMessagesUseCase;
+import com.hackatonwhoandroid.domain.usecase.SubscribeForMessagesUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
-import com.hackatonwhoandroid.utils.Toaster;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
 
-import org.joda.time.DateTime;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -45,13 +42,22 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     ErrorHandler errorHandler;
 
     @Inject
-    WhoisUseCase whoisUseCase;
+    SendMessageDomainUseCase sendMessageDomainUseCase;
+
+    @Inject
+    SubscribeForMessagesUseCase subscribeForMessagesUseCase;
+
+    @Inject
+    FavoriteMessageMarkUseCase favoriteMessageMarkUseCase;
+
+    @Inject
+    ShowFavoriteMessagesUseCase showFavoriteMessagesUseCase;
+
+    @Inject
+    RefreshMessagesUseCase refreshMessagesUseCase;
 
     @Inject
     Resources resources;
-
-    Pattern domainValidatorPattern = Pattern.compile("^((?!-)[A-Za-z0-9\\p{IsCyrillic}-]{1,63}(?<!-)\\.)+[A-Za-z\\p{IsCyrillic}]{2,6}$");
-    List<String> validDomains = Arrays.asList("rs", "срб", "net", "com");
 
     private final MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
     private final MutableLiveData<MessageModel> selectedDomainMessage = new MutableLiveData<>();
@@ -61,135 +67,53 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
     @Inject
     ChatViewModel() {
-//        MessageModel message = new MessageModel();
-//        message.body
-
-//                .body("Zdravo")
-//                .timeStamp(DateTime.now())
-//                .isCreatedByUser(false)
-//                .build();
-////
-//        MessageModel message2 = MessageModel.builder()
-//                .body("Kako ti mogu pomoći? \uD83D\uDE42")
-//                .timeStamp(DateTime.now())
-//                .isCreatedByUser(false)
-//                .build();
-
         List<MessageModel> list = new ArrayList<>();
-//        list.add(message);
-//        list.add(message2);
         messages.setValue(list);
     }
 
-    public boolean onInputSubmit(String domainName) {
-        domainName = domainName.toLowerCase();
-        Matcher matcher = domainValidatorPattern.matcher(domainName);
-        if (matcher.matches()) {
-            String[] split = domainName.split("\\.");
-            if (validDomains.contains(split[1])) {
-                sendDomainMessage(domainName, split[0], "." + split[1]);
-            } else {
-                addToMessages(createBotMessage(String.format(resources.getString(R.string.domain_is_not_suported_for_extension), split[1], validDomains.toString())));
-            }
-        } else {
-            addToMessages(createBotMessage(String.format(resources.getString(R.string.domain_is_not_valid), domainName)));
-        }
-        return true;
-    }
-
-    private void sendDomainMessage(String input, String name, String extension) {
-        MessageModel userMessage = createUserMessage(input, name, extension, resources.getString(R.string.chat_status_message_checking_domain));
-        addToMessages(userMessage);
-        addToSearchHistory(input);
-        int messageNumber = getLastMessageNumber();
-        dispatchAction(ON_DOMAIN_SUBMIT);
-
-        addDisposable(whoisUseCase.execute(input)
+    public void initMessages() {
+        addDisposable(subscribeForMessagesUseCase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        messageResponse -> {
-                            MessageModel model = Mappers.getMapper(MessageModel.Mappers.class).map(messageResponse);
-                            updateDomainMessageRegardingResponseStatus(userMessage, messageNumber, messageResponse);
-                            addToMessages(model);
-                            selectedDomainMessage.setValue(userMessage);
-                            dispatchAction(ON_DOMAIN_RESPONSE);
+                        messages -> {
+                            List<MessageModel> list = Mappers.getMapper(MessageModel.Mappers.class).mapAll(messages, resources);
+                            this.messages.setValue(list);
+                        },
+                        this::handleOnError
+                ));
+        addDisposable(refreshMessagesUseCase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
                         },
                         this::handleOnError
                 ));
     }
 
-    private int getLastMessageNumber() {
-        return Objects.requireNonNull(messages.getValue()).size() - 1;
+    public boolean onInputSubmit(String domainName) {
+        sendDomainMessage(domainName);
+        return true;
     }
 
-    private void updateDomainMessageRegardingResponseStatus(MessageModel userMessage, int messageNumber, Message messageResponse) {
-        switch (messageResponse.getDomainStatus()) {
-            case Active:
-                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_active));
-                userMessage.setType(Message.Type.DOMAIN_ACTIVE);
-                editMessage(messageNumber, userMessage);
-                dispatchAction(CHANGE_COLOR);
-                break;
-            case NotRegistered:
-            case Inactive:
-                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_inactive));
-                userMessage.setType(Message.Type.DOMAIN_INACTIVE);
-                editMessage(messageNumber, userMessage);
-                break;
-            case Reserved:
-                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_reserved));
-                userMessage.setType(Message.Type.DOMAIN_OTHER);
-                editMessage(messageNumber, userMessage);
-                break;
-            default:
-                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_otherStatus));
-                userMessage.setType(Message.Type.DOMAIN_OTHER);
-                editMessage(messageNumber, userMessage);
-                break;
-        }
-    }
+//    MessageModel userMessage = createUserMessage(input, name, extension, resources.getString(R.string.chat_status_message_checking_domain));
+//    addToMessages(userMessage);
+//    addToSearchHistory(input);
+//    int messageNumber = getLastMessageNumber();
+//    dispatchAction(ON_DOMAIN_SUBMIT);
 
-    @NonNull
-    private MessageModel createUserMessage(String domain, String name, String domainExtension, String statusMessage) {
-        MessageModel userMessage = new MessageModel();
-        userMessage.setBody(domain);
-        userMessage.setDomainName(name);
-        userMessage.setDomainExtension(domainExtension);
-        userMessage.setTimestamp(DateTime.now());
-        userMessage.setCreatedByUser(true);
-        userMessage.setFavorite(false);
-        userMessage.setType(Message.Type.DOMAIN_LOADING);
-        userMessage.setStatusMessage(statusMessage);
-        return userMessage;
-    }
-
-    @NonNull
-    private MessageModel createBotMessage(String message) {
-        MessageModel userMessage = new MessageModel();
-        userMessage.setBody(message);
-        userMessage.setTimestamp(DateTime.now());
-        userMessage.setCreatedByUser(false);
-        userMessage.setFavorite(false);
-        userMessage.setType(Message.Type.TEXT);
-        return userMessage;
-    }
-
-    private void addToMessages(MessageModel message) {
-        List<MessageModel> list = messages.getValue();
-        if (list == null) {
-            list = new ArrayList<>();
-        }
-        list.add(message);
-        messages.setValue(list);
-    }
-
-    private void editMessage(int messageNumber, MessageModel message) {
-        List<MessageModel> list = messages.getValue();
-        if (list != null) {
-            list.set(messageNumber, message);
-            messages.setValue(list);
-        }
+    private void sendDomainMessage(String input) {
+        dispatchAction(ON_DOMAIN_SUBMIT);
+        addDisposable(sendMessageDomainUseCase.execute(input)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
+                            dispatchAction(ON_DOMAIN_RESPONSE);
+                        },
+                        this::handleOnError
+                ));
     }
 
     public void onDomainMessageActionClick(DomainMessageAction action) {
@@ -200,22 +124,20 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
         switch (action) {
             case FAVORITE:
-                // toggle message favorite boolean
-                List<MessageModel> messages = this.messages.getValue();
-                if (messages != null) {
-                    boolean isFavorite = !selectedDomainMessage.isFavorite();
-                    for (MessageModel element : messages) {
-                        // all elements with the same body (domain name) should toggle favorites state
-                        if (element.getType().isClickable() && element.getBody().equals(selectedDomainMessage.getBody())) {
-                            element.setFavorite(isFavorite);
-                        }
-                    }
-                    this.messages.setValue(messages);
-                }
+                Message message = Mappers.getMapper(MessageModel.Mappers.class).mapToMessage(selectedDomainMessage);
+                addDisposable(favoriteMessageMarkUseCase.execute(message)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                () -> {
+                                    dispatchAction(ON_LIST_UPDATE);
+                                },
+                                this::handleOnError
+                        ));
                 break;
             case REFRESH:
                 // resend message with domain name
-                sendDomainMessage(selectedDomainMessage.getBody(), selectedDomainMessage.getDomainName(), selectedDomainMessage.getDomainExtension());
+                sendDomainMessage(selectedDomainMessage.getBody());
                 this.selectedDomainMessage.setValue(null);
                 break;
             case REMINDER:
@@ -231,7 +153,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         MessageModel userMessage = new MessageModel();
         userMessage.setBody(domain);
         userMessage.setDomainName(name);
-        userMessage.setTimestamp(DateTime.now());
+        userMessage.setTimestamp(System.currentTimeMillis());
         userMessage.setCreatedByUser(true);
         userMessage.setFavorite(false);
         userMessage.setType(Message.Type.REMINDER);
@@ -239,67 +161,18 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         return userMessage;
     }
 
-    public void addToSearchHistory(String newValue) {
-        searchHistory.removeIf(element -> element.equals(newValue));
-        searchHistory.add(0, newValue);
+    public void showFavorites(boolean show) {
+        addDisposable(showFavoriteMessagesUseCase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
+                            dispatchAction(ON_LIST_UPDATE);
+                        },
+                        this::handleOnError
+                ));
     }
 
-    public void toggleFavorites() {
-
-
-    }
-
-//    public LiveData<Boolean> showNoFavoritesView() {
-//        return Transformations.map(list, input -> LineType.FAVORITE.equals(selectedLineGroup.getValue()) && list.getValue() != null && list.getValue().isEmpty());
-//    }
-
-    //    @SuppressWarnings("WeakerAccess")
-//    public void syncData() {
-//        analytics.syncSwiped();
-//        addDisposable(syncDataUseCase.execute()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                        syncResponse -> {
-//                            noNetwork.setValue(false);
-//                            checkForAppUpdate(syncResponse);
-//                        },
-//                        this::handleOnError
-//                ));
-//    }
-//
-//    private void checkForAppUpdate(SyncResponse syncResponse) {
-//        addDisposable(checkForAppUpdateUseCase.execute()
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                        hasAppUpdate -> {
-//                            Log.d(TAG, "Has App update");
-//                            dispatchAction(ActionCode.UPDATE_AVAILABLE);
-//                        },
-//                        error -> dispatchAction(ActionCode.ERROR, errorHandler.parse(error)),
-//                        () -> {
-//                            Log.d(TAG, "Sync finished");
-//                            dispatchAction(ActionCode.ON_UPDATE_FINISH, syncResponse);
-//                        }
-//                ));
-//    }
-//
-//    @SuppressWarnings("WeakerAccess")
-//    public void getLines() {
-//        addDisposable(getLinesUseCase.execute()
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                        list -> {
-//                            dispatchAction(ActionCode.ON_LIST);
-//                            Log.d(TAG, "Lines: " + list.size() + " ");
-//                            this.list.setValue(Mappers.getMapper(ChatItemModel.Mappers.class).mapAll(list));
-//                        },
-//                        this::handleOnError
-//                ));
-//    }
-//
     private void handleOnError(Throwable error) {
         if (error instanceof NoNetworkException) {
 //            noNetwork.setValue(true);
@@ -365,8 +238,9 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         selectedDomainMessage.setValue(domainMessage);
     }
 
+
     public enum ActionCode {
-        ERROR, ERROR_NETWORK, ON_LIST, ON_DOMAIN_SUBMIT, ON_DOMAIN_RESPONSE, CHANGE_COLOR
+        ERROR, ERROR_NETWORK, ON_LIST_UPDATE, ON_DOMAIN_SUBMIT, ON_DOMAIN_RESPONSE, CHANGE_COLOR
     }
 
     public enum DomainMessageAction {

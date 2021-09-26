@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -19,7 +18,6 @@
         android:paddingTop="@dimen/message_padding_constraint_top"
         android:paddingEnd="@dimen/message_padding_sides"
         android:paddingBottom="@dimen/message_padding_constraint_bottom">
-
 
         <com.google.android.flexbox.FlexboxLayout
             android:id="@id/bubble"
@@ -111,7 +109,7 @@
 
         <ImageView
             android:id="@+id/imageButton"
-            visibility="@{viewmodel.message.isFavorite}"
+            visible="@{viewmodel.message.isFavorite}"
             android:layout_width="22dp"
             android:layout_height="22dp"
             app:layout_constraintBottom_toTopOf="@+id/bubble"

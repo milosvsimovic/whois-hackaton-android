@@ -33,7 +33,7 @@ public class BindingAdapters {
         }
     }
 
-    @BindingAdapter(value = {"visibility", "invisibility"}, requireAll = false)
+    @BindingAdapter(value = {"visible", "invisibility"}, requireAll = false)
     public static void bindVisibility(@NonNull View view, @Nullable Boolean visibility, @Nullable Boolean invisibility) {
         if (visibility != null) {
             view.setVisibility(visibility ? View.VISIBLE : invisibility != null && invisibility ? View.INVISIBLE : View.GONE);

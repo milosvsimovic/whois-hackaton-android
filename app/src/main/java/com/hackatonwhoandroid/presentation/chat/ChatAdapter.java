@@ -1,7 +1,10 @@
 package com.hackatonwhoandroid.presentation.chat;
 
-import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_CLICK;
+import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_FULL_LIST;
 import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_ADDED;
+import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_CLICK;
+import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_LIST_ADDED;
+import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_LIST_UPDATED;
 
 import android.annotation.SuppressLint;
 
@@ -13,6 +16,8 @@ import com.hackatonwhoandroid.utils.base.presentation.IActionListener;
 import com.hackatonwhoandroid.utils.base.presentation.adapter.BaseRecyclerAdapter;
 import com.hackatonwhoandroid.utils.base.presentation.adapter.BindingViewHolder;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.ActionProvider;
+
+import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -64,30 +69,89 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void setItems(List<MessageModel> items) {
-        if (getItemCount() == 0) {
-            super.setItems(items);
-        } else {
-            // state update for one or more elements
-            if (items.size() == getItemCount()) {
-                notifyDataSetChanged();
-            } else {
-                // add or remove element
-                int lastElementNumber = getItemCount() - 1;
-                MessageModel lastMessage = get(lastElementNumber);
+        if (items == null) {
+            return;
+        }
 
-                for (MessageModel element : items) {
-                    if (lastMessage.getTimestamp().isBefore(element.getTimestamp())) {
-                        update(lastElementNumber, lastMessage);
-                        add(element);
-                        listener.onAction(actionProvider.provide(ON_ITEM_ADDED, lastElementNumber));
-                    }
+        int diff = items.size() - getItemCount();
+
+        // empty list or update state
+        if(getItemCount() == 0){
+            super.setItems(items);
+            listener.onAction(actionProvider.provide(ON_LIST_ADDED, getItemCount() - 1));
+            return;
+        }
+
+        // favorites
+        if(diff < 0){
+            super.setItems(items);
+            listener.onAction(actionProvider.provide(ON_LIST_UPDATED, getItemCount() - 1));
+            return;
+        }
+
+        // update state
+        if(diff == 0){
+            super.setItems(items);
+            listener.onAction(actionProvider.provide(ON_LIST_UPDATED, getItemCount() - 1));
+            return;
+        }
+
+        // add element
+        if(diff == 1){
+            int lastElementPosition = getItemCount() - 1;
+            MessageModel lastMessage = get(lastElementPosition);
+
+            for (int i = 0; i < items.size(); i++) {
+                if (new DateTime(lastMessage.getTimestamp()).isBefore(new DateTime(items.get(i).getTimestamp()))) {
+                    update(lastElementPosition, items.get(i - 1)); // update previous element
+                    add(items.get(i));
+                    listener.onAction(actionProvider.provide(ON_ITEM_ADDED, getItemCount() - 1));
                 }
             }
+            return;
         }
+
+        // add element
+        if(diff > 1){
+            super.setItems(items);
+            listener.onAction(actionProvider.provide(ON_FULL_LIST, getItemCount() - 1));
+            return;
+        }
+
+
+
+
+//        if (getItemCount() == 0) {
+//            super.setItems(items);
+//            listener.onAction(actionProvider.provide(ON_LIST_ADDED, getItemCount() - 1));
+//        } else if (items.size() < getItemCount()) {
+//            // favorites case
+//            super.clear();
+//            super.setItems(items);
+//            listener.onAction(actionProvider.provide(ON_LIST_UPDATED, getItemCount() - 1));
+//        } else {
+//            // state update for one or more elements
+//            if (items.size() == getItemCount()) {
+//                super.setItems(items);
+//                listener.onAction(actionProvider.provide(ON_LIST_UPDATED, getItemCount() - 1));
+//            } else {
+//                // add or remove element
+//                int lastElementPosition = getItemCount() - 1;
+//                MessageModel lastMessage = get(lastElementPosition);
+//
+//                for (int i = 0; i < items.size(); i++) {
+//                    if (new DateTime(lastMessage.getTimestamp()).isBefore(new DateTime(items.get(i).getTimestamp()))) {
+//                        update(lastElementPosition, items.get(i - 1)); // update previous element
+//                        add(items.get(i));
+//                        listener.onAction(actionProvider.provide(ON_ITEM_ADDED, getItemCount() - 1));
+//                    }
+//                }
+//            }
+//        }
     }
 
     public enum ActionCode {
-        ON_ITEM_ADDED, ON_ITEM_CLICK
+        ON_ITEM_ADDED, ON_ITEM_CLICK, ON_LIST_ADDED, ON_LIST_UPDATED, ON_FULL_LIST
     }
 
 }

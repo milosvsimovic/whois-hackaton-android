@@ -5,7 +5,7 @@ import static com.hackatonwhoandroid.presentation.main.MainViewModel.ActionCode.
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.hackatonwhoandroid.domain.usecase.WhoisUseCase;
+import com.hackatonwhoandroid.domain.usecase.SendMessageDomainUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.BaseViewModel;
 
@@ -21,15 +21,17 @@ public class MainViewModel extends BaseViewModel<MainViewModel.ActionCode> {
     private static final String TAG = MainViewModel.class.getSimpleName();
 
     @Inject
-    WhoisUseCase whoisUseCase;
+    SendMessageDomainUseCase sendMessageDomainUseCase;
 
     @Inject
     ErrorHandler errorHandler;
 
     private final MutableLiveData<MainModel> model = new MutableLiveData<>();
+    private MutableLiveData<Boolean> showFavorites = new MutableLiveData<>();
 
     @Inject
     MainViewModel() {
+        showFavorites.setValue(false);
     }
 
     void callExampleMethod() {
@@ -46,8 +48,9 @@ public class MainViewModel extends BaseViewModel<MainViewModel.ActionCode> {
 //                ));
     }
 
-    public void onActionButtonFavoritesClick(){
-        dispatchAction(ACTION_FAVORITES);
+    public void onActionButtonFavoritesClick() {
+        showFavorites.setValue(showFavorites.getValue());
+        dispatchAction(ACTION_FAVORITES, showFavorites.getValue());
     }
 
     public void onActionButtonTranslateClick(){

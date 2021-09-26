@@ -11,8 +11,6 @@ import com.hackatonwhoandroid.utils.base.presentation.BaseActivity;
 import com.hackatonwhoandroid.utils.base.presentation.viewmodel.Action;
 import com.hackatonwhoandroid.utils.base.utils.LocaleHelper;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> {
 
     @Override
@@ -27,7 +25,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                 case ACTION_FAVORITES:
                     ChatFragment chatFragment = (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                     if (chatFragment != null) {
-                        chatFragment.handleFavoritesButtonToggle();
+                        chatFragment.handleFavoritesButtonToggle((Boolean) action.getData());
                     }
                     break;
                 case TRANSLATE:
