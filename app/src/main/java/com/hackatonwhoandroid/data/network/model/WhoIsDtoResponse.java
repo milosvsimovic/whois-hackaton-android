@@ -70,7 +70,7 @@ public class WhoIsDtoResponse {
                     break;
                 case Reserved:
                     body = String.format(resources.getString(R.string.chat_domain_is_reserverd), response.getDomainName());
-                    break;
+                    return body;
                 default:
                     body = String.format(resources.getString(R.string.chat_domain_not_available),
                             response.getDomainName());
