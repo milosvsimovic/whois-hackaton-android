@@ -12,4 +12,5 @@ public interface IMessageRepository {
     Completable sendMessageDomain(Message message);
 
     Observable<List<Message>> getMessages();
+    Completable updateMessages(List<Message> message);
 }

@@ -22,6 +22,7 @@ public class MessageModel {
 
     public String body;
     public String statusMessage;
+    public DomainStatus domainStatus;
     public long timestamp;
     private boolean isCreatedByUser;
     private boolean isFavorite;
@@ -30,9 +31,12 @@ public class MessageModel {
 
     @Mapper
     public abstract static class Mappers {
+
         @Mapping(target = "visible", ignore = true)
         @Mapping(target = "statusMessage", expression = "java(getStatusMessage(message, resources))")
         public abstract MessageModel map(Message message, @Context Resources resources);
+
+        public abstract Message mapToMessage(MessageModel message);
 
         @IterableMapping(elementTargetType = MessageModel.class)
         public abstract List<MessageModel> mapAll(List<Message> list, @Context Resources resources);

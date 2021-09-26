@@ -47,10 +47,6 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
         initRecycler();
         getViewModel().getActions().observe(getViewLifecycleOwner(), action -> {
             switch (action.getCode()) {
-//                case ON_LIST_UPDATE:
-//                    int listSize = (int) action.getData();
-//                    getViewDataBinding().recyclerMessages.getLayoutManager().scrollToPosition(listSize);
-//                    break;
                 case ON_DOMAIN_SUBMIT:
                     getViewModel().selectDomainMessage(null);
                     getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
@@ -78,6 +74,10 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
                     if (layoutManager != null) {
                         layoutManager.scrollToPosition((int) action.getData());
                     }
+                    break;
+                case ON_LIST_UPDATED:
+                    getViewModel().selectDomainMessage(null);
+                    getViewDataBinding().layoutDomainActions.setVisibility(View.GONE);
                     break;
                 case ON_ITEM_CLICK:
                     MessageModel messageModel = (MessageModel) action.getData();

@@ -29,6 +29,9 @@ public class MessageData {
 
         @IterableMapping(elementTargetType = Message.class)
         public abstract List<Message> mapAllFromData(List<MessageData> list);
+
+        @IterableMapping(elementTargetType = MessageData.class)
+        public abstract List<MessageData> mapAllToData(List<Message> list);
     }
 
 }

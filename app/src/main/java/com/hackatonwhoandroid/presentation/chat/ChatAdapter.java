@@ -1,8 +1,9 @@
 package com.hackatonwhoandroid.presentation.chat;
 
-import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_CLICK;
 import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_ADDED;
+import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_ITEM_CLICK;
 import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_LIST_ADDED;
+import static com.hackatonwhoandroid.presentation.chat.ChatAdapter.ActionCode.ON_LIST_UPDATED;
 
 import android.annotation.SuppressLint;
 
@@ -76,7 +77,8 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
         } else {
             // state update for one or more elements
             if (items.size() == getItemCount()) {
-                notifyDataSetChanged();
+                super.setItems(items);
+                listener.onAction(actionProvider.provide(ON_LIST_UPDATED, getItemCount() - 1));
             } else {
                 // add or remove element
                 int lastElementPosition = getItemCount() - 1;
@@ -94,7 +96,7 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
     }
 
     public enum ActionCode {
-        ON_ITEM_ADDED, ON_ITEM_CLICK, ON_LIST_ADDED
+        ON_ITEM_ADDED, ON_ITEM_CLICK, ON_LIST_ADDED, ON_LIST_UPDATED
     }
 
 }

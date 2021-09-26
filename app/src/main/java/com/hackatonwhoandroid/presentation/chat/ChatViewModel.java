@@ -1,17 +1,17 @@
 package com.hackatonwhoandroid.presentation.chat;
 
-import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.CHANGE_COLOR;
 import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_DOMAIN_RESPONSE;
 import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_DOMAIN_SUBMIT;
+import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_LIST_UPDATE;
 
 import android.content.res.Resources;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
-import com.hackatonwhoandroid.R;
 import com.hackatonwhoandroid.domain.exceptions.NoNetworkException;
 import com.hackatonwhoandroid.domain.model.Message;
+import com.hackatonwhoandroid.domain.usecase.FavoriteMessageMarkUseCase;
 import com.hackatonwhoandroid.domain.usecase.GetMessagesUseCase;
 import com.hackatonwhoandroid.domain.usecase.SendMessageDomainUseCase;
 import com.hackatonwhoandroid.utils.ErrorHandler;
@@ -22,7 +22,6 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -47,6 +46,9 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     GetMessagesUseCase getMessagesUseCase;
 
     @Inject
+    FavoriteMessageMarkUseCase favoriteMessageMarkUseCase;
+
+    @Inject
     Resources resources;
 
     private final MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
@@ -69,7 +71,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                         messages -> {
                             List<MessageModel> list = Mappers.getMapper(MessageModel.Mappers.class).mapAll(messages, resources);
                             this.messages.setValue(list);
-                            dispatchAction(ActionCode.ON_LIST_UPDATE, list.size());
+                            dispatchAction(ON_LIST_UPDATE, list.size());
                         },
                         this::handleOnError
                 ));
@@ -81,81 +83,17 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     private void sendDomainMessage(String input) {
-//        MessageModel userMessage = createUserMessage(input, resources.getString(R.string.chat_status_message_checking_domain));
-//        addToMessages(userMessage);
-//        addToSearchHistory(input);
-//        int messageNumber = getLastMessageNumber();
-
         dispatchAction(ON_DOMAIN_SUBMIT);
         addDisposable(sendMessageDomainUseCase.execute(input)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> {
-//                            MessageModel model = Mappers.getMapper(MessageModel.Mappers.class).map(messageResponse);
-//                            updateDomainMessageRegardingResponseStatus(userMessage, messageNumber, messageResponse);
-//                            addToMessages(model);
-//                            selectedDomainMessage.setValue(userMessage);
                             dispatchAction(ON_DOMAIN_RESPONSE);
                         },
                         this::handleOnError
                 ));
     }
-
-    private int getLastMessageNumber() {
-        return Objects.requireNonNull(messages.getValue()).size() - 1;
-    }
-
-    private void updateDomainMessageRegardingResponseStatus(MessageModel userMessage, int messageNumber, Message messageResponse) {
-        switch (messageResponse.getDomainStatus()) {
-            case Active:
-                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_active));
-                userMessage.setType(Message.Type.DOMAIN_ACTIVE);
-//                editMessage(messageNumber, userMessage);
-                dispatchAction(CHANGE_COLOR);
-                break;
-            case NotRegistered:
-            case Inactive:
-                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_inactive));
-                userMessage.setType(Message.Type.DOMAIN_INACTIVE);
-//                editMessage(messageNumber, userMessage);
-                break;
-            default:
-                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_otherStatus));
-                userMessage.setType(Message.Type.DOMAIN_OTHER);
-//                editMessage(messageNumber, userMessage);
-                break;
-        }
-    }
-
-//    @NonNull
-//    private MessageModel createUserMessage(String input, String statusMessage) {
-//        MessageModel userMessage = new MessageModel();
-//        userMessage.setBody(input);
-//        userMessage.setTimestamp(System.currentTimeMillis());
-//        userMessage.setCreatedByUser(true);
-//        userMessage.setFavorite(false);
-//        userMessage.setType(Message.Type.DOMAIN_LOADING);
-//        userMessage.setStatusMessage(statusMessage);
-//        return userMessage;
-//    }
-
-//    private void addToMessages(MessageModel message) {
-//        List<MessageModel> list = messages.getValue();
-//        if (list == null) {
-//            list = new ArrayList<>();
-//        }
-//        list.add(message);
-//        messages.setValue(list);
-//    }
-
-//    private void editMessage(int messageNumber, MessageModel message) {
-//        List<MessageModel> list = messages.getValue();
-//        if (list != null) {
-//            list.set(messageNumber, message);
-//            messages.setValue(list);
-//        }
-//    }
 
     public void onDomainMessageActionClick(DomainMessageAction action) {
         MessageModel selectedDomainMessage = this.selectedDomainMessage.getValue();
@@ -165,18 +103,28 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
         switch (action) {
             case FAVORITE:
-                // toggle message favorite boolean
-                List<MessageModel> messages = this.messages.getValue();
-                if (messages != null) {
-                    boolean isFavorite = !selectedDomainMessage.isFavorite();
-                    for (MessageModel element : messages) {
-                        // all elements with the same body (domain name) should toggle favorites state
-                        if (Message.Type.isClickable(element.getType()) && element.getBody().equals(selectedDomainMessage.getBody())) {
-                            element.setFavorite(isFavorite);
-                        }
-                    }
-                    this.messages.setValue(messages);
-                }
+                Message message =Mappers.getMapper(MessageModel.Mappers.class).mapToMessage(selectedDomainMessage);
+                addDisposable(favoriteMessageMarkUseCase.execute(message)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                () -> {
+                                    dispatchAction(ON_LIST_UPDATE);
+                                },
+                                this::handleOnError
+                        ));
+//                // toggle message favorite boolean
+//                List<MessageModel> messages = this.messages.getValue();
+//                if (messages != null) {
+//                    boolean isFavorite = !selectedDomainMessage.isFavorite();
+//                    for (MessageModel element : messages) {
+//                        // all elements with the same body (domain name) should toggle favorites state
+//                        if (Message.Type.isClickable(element.getType()) && element.getBody().equals(selectedDomainMessage.getBody())) {
+//                            element.setFavorite(isFavorite);
+//                        }
+//                    }
+//                    this.messages.setValue(messages);
+//                }
                 break;
             case REFRESH:
                 // resend message with domain name

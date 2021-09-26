@@ -67,7 +67,7 @@ public class LocalStorage {
         subject.onNext(messages);
     }
 
-    private List<MessageData> getList() {
+    public List<MessageData> getList() {
         String json = prefs.getString(MESSAGE_HISTORY, gson.toJson(new ArrayList<>()));
         Type listType = new TypeToken<ArrayList<MessageData>>() {
         }.getType();
