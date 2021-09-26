@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
             android:background="@drawable/shape_outcoming_message"
-            android:backgroundTint="@color/cornflower_blue_two"
+            android:backgroundTint="@color/light_blue"
             android:elevation="8dp"
             android:onClick="@{() -> viewmodel.onClick()}"
             android:paddingStart="@dimen/input_padding_left"
@@ -64,7 +64,7 @@
                         android:alpha="0.45"
                         android:fontFamily="sans-serif-light"
                         android:hint="Status message text"
-                        android:text="@{viewmodel.message.body}"
+                        android:text="@{viewmodel.message.statusMessage}"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
                         android:textSize="@dimen/message_text_small_size" />
@@ -115,7 +115,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/bubble"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_heart_fill" />
+            app:srcCompat="@drawable/ic_heart_fill"
+            app:tint="@color/light_blue"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

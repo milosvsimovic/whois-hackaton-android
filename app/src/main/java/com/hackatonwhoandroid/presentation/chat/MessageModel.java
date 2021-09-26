@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class MessageModel {
 
     public String body;
-    //public String statusMessage;
+    public String statusMessage;
     @NotNull
     public DateTime timestamp;
     private boolean isCreatedByUser;

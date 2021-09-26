@@ -1,11 +1,16 @@
 package com.hackatonwhoandroid.presentation.chat;
 
+import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.CHANGE_COLOR;
 import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_DOMAIN_RESPONSE;
 import static com.hackatonwhoandroid.presentation.chat.ChatViewModel.ActionCode.ON_DOMAIN_SUBMIT;
 
+import android.content.res.Resources;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
+import com.hackatonwhoandroid.R;
 import com.hackatonwhoandroid.domain.exceptions.NoNetworkException;
 import com.hackatonwhoandroid.domain.model.Message;
 import com.hackatonwhoandroid.domain.usecase.WhoisUseCase;
@@ -18,6 +23,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -37,6 +43,9 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
 
     @Inject
     WhoisUseCase whoisUseCase;
+
+    @Inject
+    Resources resources;
 
     private final MutableLiveData<List<MessageModel>> messages = new MutableLiveData<>();
     private final MutableLiveData<MessageModel> selectedDomainMessage = new MutableLiveData<>();
@@ -72,14 +81,10 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     private void sendDomainMessage(String input) {
-        MessageModel userMessage = new MessageModel();
-        userMessage.setBody(input);
-        userMessage.setTimestamp(DateTime.now());
-        userMessage.setCreatedByUser(true);
-        userMessage.setFavorite(false);
-        userMessage.setType(Message.Type.DOMAIN);
+        MessageModel userMessage = createUserMessage(input, resources.getString(R.string.chat_status_message_checking_domain));
         addToMessages(userMessage);
         addToSearchHistory(input);
+        int messageNumber = getLastMessageNumber();
         dispatchAction(ON_DOMAIN_SUBMIT);
 
         addDisposable(whoisUseCase.execute(input)
@@ -88,6 +93,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 .subscribe(
                         messageResponse -> {
                             MessageModel model = Mappers.getMapper(MessageModel.Mappers.class).map(messageResponse);
+                            updateDomainMessageRegardingResponseStatus(userMessage, messageNumber, messageResponse);
                             addToMessages(model);
                             selectedDomainMessage.setValue(userMessage);
                             dispatchAction(ON_DOMAIN_RESPONSE);
@@ -96,6 +102,43 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                 ));
     }
 
+    private int getLastMessageNumber() {
+        return Objects.requireNonNull(messages.getValue()).size() - 1;
+    }
+
+    private void updateDomainMessageRegardingResponseStatus(MessageModel userMessage, int messageNumber, Message messageResponse) {
+        switch (messageResponse.getDomainStatus()) {
+            case Active:
+                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_active));
+                userMessage.setType(Message.Type.DOMAIN_ACTIVE);
+                editMessage(messageNumber, userMessage);
+                dispatchAction(CHANGE_COLOR);
+                break;
+            case NotRegistered:
+            case Inactive:
+                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_inactive));
+                userMessage.setType(Message.Type.DOMAIN_INACTIVE);
+                editMessage(messageNumber, userMessage);
+                break;
+            default:
+                userMessage.setStatusMessage(resources.getString(R.string.chat_status_message_otherStatus));
+                userMessage.setType(Message.Type.DOMAIN_OTHER);
+                editMessage(messageNumber, userMessage);
+                break;
+        }
+    }
+
+    @NonNull
+    private MessageModel createUserMessage(String input, String statusMessage) {
+        MessageModel userMessage = new MessageModel();
+        userMessage.setBody(input);
+        userMessage.setTimestamp(DateTime.now());
+        userMessage.setCreatedByUser(true);
+        userMessage.setFavorite(false);
+        userMessage.setType(Message.Type.DOMAIN_LOADING);
+        userMessage.setStatusMessage(statusMessage);
+        return userMessage;
+    }
 
     private void addToMessages(MessageModel message) {
         List<MessageModel> list = messages.getValue();
@@ -104,6 +147,14 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         }
         list.add(message);
         messages.setValue(list);
+    }
+
+    private void editMessage(int messageNumber, MessageModel message) {
+        List<MessageModel> list = messages.getValue();
+        if (list != null) {
+            list.set(messageNumber, message);
+            messages.setValue(list);
+        }
     }
 
     public void onDomainMessageActionClick(DomainMessageAction action) {
@@ -120,7 +171,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
                     boolean isFavorite = !selectedDomainMessage.isFavorite();
                     for (MessageModel element : messages) {
                         // all elements with the same body (domain name) should toggle favorites state
-                        if (element.getType() == Message.Type.DOMAIN && element.getBody().equals(selectedDomainMessage.getBody())) {
+                        if (element.getType() == Message.Type.DOMAIN_LOADING && element.getBody().equals(selectedDomainMessage.getBody())) {
                             element.setFavorite(isFavorite);
                         }
                     }
@@ -144,7 +195,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         searchHistory.add(0, newValue);
     }
 
-    public void toggleFavorites(){
+    public void toggleFavorites() {
 
 
     }
@@ -266,7 +317,7 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
     }
 
     public enum ActionCode {
-        ERROR, ERROR_NETWORK, ON_LIST, ON_DOMAIN_SUBMIT, ON_DOMAIN_RESPONSE
+        ERROR, ERROR_NETWORK, ON_LIST, ON_DOMAIN_SUBMIT, ON_DOMAIN_RESPONSE, CHANGE_COLOR
     }
 
     public enum DomainMessageAction {

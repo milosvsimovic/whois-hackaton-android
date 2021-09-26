@@ -68,16 +68,18 @@ public class ChatAdapter extends BaseRecyclerAdapter<MessageModel> {
             super.setItems(items);
         } else {
             // state update for one or more elements
-            if(items.size() == getItemCount()){
+            if (items.size() == getItemCount()) {
                 notifyDataSetChanged();
-            }else{
+            } else {
                 // add or remove element
-                MessageModel lastMessage = get(getItemCount() - 1);
+                int lastElementNumber = getItemCount() - 1;
+                MessageModel lastMessage = get(lastElementNumber);
 
                 for (MessageModel element : items) {
                     if (lastMessage.getTimestamp().isBefore(element.getTimestamp())) {
+                        update(lastElementNumber, lastMessage);
                         add(element);
-                        listener.onAction(actionProvider.provide(ON_ITEM_ADDED, getItemCount() - 1));
+                        listener.onAction(actionProvider.provide(ON_ITEM_ADDED, lastElementNumber));
                     }
                 }
             }

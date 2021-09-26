@@ -39,6 +39,7 @@ public class WhoIsDtoResponse {
         @Mapping(target = "timestamp", ignore = true)
         @Mapping(target = "createdByUser", ignore = true)
         @Mapping(target = "favorite", ignore = true)
+        @Mapping(target = "domainStatus", expression = "java(getDomainStatus(response))")
         public abstract Message mapToMessage(WhoIsDtoResponse response, Resources resources);
 
         String convertToBody(WhoIsDtoResponse response, Resources resources) {
@@ -67,6 +68,10 @@ public class WhoIsDtoResponse {
 
         Message.Type getType() {
             return Message.Type.INFO;
+        }
+
+        DomainStatus getDomainStatus(WhoIsDtoResponse response) {
+            return DomainStatus.valueOf(response.getDomainStatus());
         }
     }
 

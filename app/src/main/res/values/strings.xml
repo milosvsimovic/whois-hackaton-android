@@ -8,5 +8,9 @@
     <string name="chat_domain_is_available">😀 Sjajno! Domen %s je slobodan!\n\nOdaberi neku akciju za ovaj domen</string>
     <string name="chat_domain_expired_not_available_yet">Domen %s je istekao %s ali još uvek nije slobodan za kupovinu.</string>
     <string name="chat_domain_not_available">Domen %s nije dostupan.</string>
+    <string name="chat_status_message_checking_domain">PROVERA DOMENA U TOKU</string>
+    <string name="chat_status_message_active">ZAUZET</string>
+    <string name="chat_status_message_inactive">SLOBODAN</string>
+    <string name="chat_status_message_otherStatus">TRENUTNO NIJE DOSTUPAN</string>
 
 </resources>
