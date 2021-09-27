@@ -37,19 +37,22 @@ public class SendMessageDomainUseCase implements BaseParamUseCase<String, Comple
         domainName = domainName.toLowerCase();
         Matcher matcher = domainValidatorPattern.matcher(domainName);
 
-//        if("")
-
-        if (matcher.matches()) {
-            String[] split = domainName.split("\\.");
-            if (validDomains.contains(split[1])) {
-                return messageRepository.sendMessageMessage(createDomainMessage(domainName));
-            } else {
-                return messageRepository.sendMessageMessage(createBotMessageInvalidDomain(split));
-            }
+        if (domainName.equals("_init")) {
+            return messageRepository.sendMessageMessage(createBotMessageInit());
         } else {
-            return messageRepository.sendMessageMessage(createBotMessageInvalidFormat(domainName));
+            if (matcher.matches()) {
+                String[] split = domainName.split("\\.");
+                if (validDomains.contains(split[1])) {
+                    return messageRepository.sendMessageMessage(createDomainMessage(domainName));
+                } else {
+                    return messageRepository.sendMessageMessage(createBotMessageInvalidDomain(split));
+                }
+            } else {
+                return messageRepository.sendMessageMessage(createBotMessageInvalidFormat(domainName));
+            }
         }
     }
+
 
     private Message createDomainMessage(String domainName) {
         Message message = new Message();
@@ -60,6 +63,16 @@ public class SendMessageDomainUseCase implements BaseParamUseCase<String, Comple
         message.setType(Message.Type.DOMAIN_LOADING);
         message.setDomainStatus(null);
         return message;
+    }
+
+    private Message createBotMessageInit() {
+        Message botMessage = new Message();
+        botMessage.setBody("Zdravo, tu sam da vam pomognem. Da li želite da pretražite neki domen?");
+        botMessage.setTimestamp(System.currentTimeMillis());
+        botMessage.setCreatedByUser(false);
+        botMessage.setFavorite(false);
+        botMessage.setType(Message.Type.TEXT);
+        return botMessage;
     }
 
     private Message createBotMessageInvalidDomain(String[] split) {

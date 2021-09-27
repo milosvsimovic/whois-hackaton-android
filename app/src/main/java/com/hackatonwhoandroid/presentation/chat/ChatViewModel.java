@@ -237,6 +237,10 @@ public class ChatViewModel extends BaseViewModel<ChatViewModel.ActionCode> {
         selectedDomainMessage.setValue(domainMessage);
     }
 
+    public void sendInitialMessage() {
+        sendDomainMessage("_init");
+    }
+
 
     public enum ActionCode {
         ERROR, ERROR_NETWORK, ON_LIST_UPDATE, ON_DOMAIN_SUBMIT, ON_DOMAIN_RESPONSE, CHANGE_COLOR

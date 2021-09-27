@@ -33,12 +33,6 @@ public class WhoIsDtoResponse {
     @SerializedName("who_is_raw_data")
     @Expose
     public String rawData;
-    @SerializedName("host_address")
-    @Expose
-    public String hostAddress;
-    @SerializedName("name_servers")
-    @Expose
-    public String nameServers;
 
     @Mapper
     public static abstract class Mappers {
@@ -48,7 +42,6 @@ public class WhoIsDtoResponse {
         @Mapping(target = "timestamp", ignore = true)
         @Mapping(target = "createdByUser", ignore = true)
         @Mapping(target = "favorite", ignore = true)
-        @Mapping(target = "domainStatus", expression = "java(getDomainStatus(response))")
         public abstract Message mapToMessage(WhoIsDtoResponse response, Resources resources);
 
         String convertToBody(WhoIsDtoResponse response, Resources resources) {
@@ -75,7 +68,7 @@ public class WhoIsDtoResponse {
                     body = String.format(resources.getString(R.string.chat_domain_not_available),
                             response.getDomainName());
             }
-            return body + "\n" + response.getRawData() + "\n" + "Host_address: " + response.getHostAddress()  + "\n"  + "Name_servers: " + response.getNameServers();
+            return body + "\n" + response.getRawData();
         }
 
         Message.Type getType() {

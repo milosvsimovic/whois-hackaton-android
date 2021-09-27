@@ -58,6 +58,7 @@ public class ChatFragment extends BaseFragment<FragmentChatBinding, ChatViewMode
             }
         });
         getViewModel().initMessages();
+        getViewModel().sendInitialMessage();
     }
 
     public void handleFavoritesButtonToggle(boolean show) {

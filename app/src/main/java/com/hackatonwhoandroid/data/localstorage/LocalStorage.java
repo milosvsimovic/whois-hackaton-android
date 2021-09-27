@@ -20,10 +20,8 @@ public class LocalStorage {
 
     private static final String STORE_APP_SETTINGS = "STORE_APP_SETTINGS";
     private static final String MESSAGE_HISTORY = "MESSAGE_HISTORY";
-
     @Inject
     SharedPreferences prefs;
-
     @Inject
     Gson gson;
 
